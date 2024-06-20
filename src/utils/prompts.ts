@@ -1,6 +1,7 @@
 import { Socket } from "socket.io-client";
 import { createReadlineInterface } from "./readline";
 import { handleUserSelection } from "./clientUtils";
+import { categories, logObject } from "./category";
 
 const rl = createReadlineInterface();
 
@@ -11,39 +12,31 @@ export const promptInput = (query: string): Promise<string> =>
     })
   );
 
-export const promptFunctionSelection = (
-  socket: Socket,
+export const promptFunctionSelection = async (
   functions: string[],
   roleName: string
-): Promise<number | void> => {
-  return promptInput("Select a function number: ").then((selection) => {
-    const selectedFunctionIndex = parseInt(selection);
-    if (
-      selectedFunctionIndex >= 1 &&
-      selectedFunctionIndex <= functions.length
-    ) {
-      return selectedFunctionIndex;
-      // return await handleUserSelection(socket,roleName,selectedFunctionIndex)
-    } else {
-      console.error("Invalid selection");
-      promptFunctionSelection(socket, functions, roleName);
-    }
-  });
+) => {
+  const selection = await promptInput("Select a function number: ");
+  const selectedIndex = parseInt(selection);
+
+  if (selectedIndex!=undefined && selectedIndex >= 1 && selectedIndex <= functions.length) {
+    return selectedIndex;
+  } else {
+    console.error("Invalid function number");
+    promptFunctionSelection(functions,roleName);
+  }
 };
 
-export const executeFunction = (socket: Socket, functionName: string) => {
-  console.log(`Executing function: ${functionName}`);
-  socket.emit(functionName); // Emit the function name to the server to execute the functionality
-};
-
-export const promptForFoodItemDetails = async (
-  socket: Socket
-): Promise<any> => {
-  console.log("Add new food item");
+export const promptForFoodItemDetails = async (): Promise<any> => {
   const foodName = await promptInput("Enter food item name: ");
   const price = await promptInput("Enter food item price: ");
-  const foodItemDetails = { foodName, price: parseFloat(price) };
-  console.log(foodItemDetails);
+  console.log("Below are the categories :");
+  logObject(categories);
+  const categoryId = await promptInput("Select Category: ");
+  const foodItemDetails = {
+    foodName,
+    price: parseFloat(price),
+    categoryId: parseInt(categoryId),
+  };
   return foodItemDetails;
-  // socket.emit("addItem",foodItemDetails)
 };

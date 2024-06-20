@@ -1,8 +1,8 @@
 import { createServer, Server as HTTPServer } from "http";
 import { Server as SocketIOServer, Socket } from "socket.io";
 import { UserController } from "./controllers/userController";
-import { IFoodItem } from "./types";
 import { getFunctionsByRole } from "./utils/serverUtils";
+import { AdminController } from "./controllers/adminController";
 
 class Server {
   private httpServer: HTTPServer;
@@ -22,14 +22,13 @@ class Server {
 
       socket.on("authenticateUser", this.handleAuthenticateUser(socket));
       socket.on("disconnect", this.handleDisconnect);
-      socket.on("addItem", this.handleAddingItem);
+      socket.on("executeFunction", this.executeFunction(socket));
     });
   }
 
   private handleAuthenticateUser = (socket: Socket) => async (id: number) => {
     const userController = new UserController();
     const user = await userController.fetchUser(id);
-    console.log(user);
 
     if (user) {
       const role = await userController.fetchRole(user.role_id);
@@ -38,24 +37,38 @@ class Server {
         "userFound",
         `Welocme ${user.firstname} ${user.lastname} to the Cafeteria Recommendation System`
       );
-      
-      const functions: string[] | null = getFunctionsByRole(role!.role_name);
-      socket.emit("availableFunctions", {
-        functions,
-        roleName: role!.role_name,
-        user,
-      });
+      // this.sendAvailableFunctions()
+      this.sendAvailableFunctions(socket, role!.role_name, user);
     } else {
       socket.emit("userNotFound", "User not found");
     }
+  };
+
+  private sendAvailableFunctions = (socket: Socket, roleName: string, user: any) => {
+    const functions: string[] | null = getFunctionsByRole(roleName);
+    socket.emit("availableFunctions", {
+      functions,
+      roleName,
+      user,
+    });
   };
 
   private handleDisconnect = () => {
     console.log("user disconnected");
   };
 
-  private handleAddingItem = async (foodItemDetails: IFoodItem) => {
-    console.log("Food Item ; ", foodItemDetails);
+  private executeFunction = (socket: Socket) =>async ({index,payload,roleName,user}:any) => {
+    switch (roleName){
+      case "admin":
+        console.log("Admin is adding item into the menu");
+        const adminController = new AdminController();
+        const result = await adminController.executeFunctionality(index,payload)
+        socket.emit("message",result)
+
+      case "chef":
+      case "employee":
+    }
+    this.sendAvailableFunctions(socket, roleName, user);
   };
 
   public start() {

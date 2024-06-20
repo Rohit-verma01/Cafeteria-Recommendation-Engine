@@ -9,15 +9,12 @@ export const showAvailableFunctions = (functions: string[]) => {
 };
 
 export const handleUserSelection = async(
-  socket: Socket,
   roleName: string,
   selectedIndex: number
 ) => {
   switch (roleName) {
     case "admin":
-      // handleAdminInput(socket,selectedIndex);
-      // console.log("In User Handle",handleAdminInput(socket,selectedIndex))
-      return await handleAdminInput(socket,selectedIndex);
+      return await handleAdminInput(selectedIndex);
       break;
     case "chef":
       console.log("chef");
@@ -29,15 +26,13 @@ export const handleUserSelection = async(
 };
 
 export const handleAdminInput = async (
-  socket: Socket,
   selectedIndex: number
 ) => {
   switch (selectedIndex) {
     case 1:
-      console.log("Add Item");
       // promptForFoodItemDetails(socket)
       // console.log("Handle Admin Input",promptForFoodItemDetails(socket))
-      return await promptForFoodItemDetails(socket)
+      return await promptForFoodItemDetails()
       break;
     case 2:
       console.log("2nd");

@@ -1,6 +1,7 @@
 import { io, Socket } from "socket.io-client";
 import { promptInput, promptFunctionSelection } from "./utils/prompts";
-import { showAvailableFunctions } from "./utils/clientUtils";
+import { handleUserSelection, showAvailableFunctions } from "./utils/clientUtils";
+import { IUser } from "./types";
 
 class Client {
   private socket: Socket;
@@ -17,6 +18,7 @@ class Client {
     this.socket.on("error", this.onError);
     this.socket.on("userNotFound", this.onUserNotFound);
     this.socket.on("disconnect",this.onServerDisconnect);
+    this.socket.on("message",this.onGettingMessage);
   }
 
   private onConnect = () => {
@@ -30,15 +32,28 @@ class Client {
     console.log(message);
   };
 
+  private onGettingMessage = (message: string) => {
+    
+    console.log(message);
+  };
+
   private onAvailableFunctions = async ({
     functions,
     roleName,
+    user
   }: {
     functions: string[];
     roleName: string;
+    user:IUser
   }) => {
     showAvailableFunctions(functions);
-    promptFunctionSelection(this.socket,functions,roleName)
+    const index = await promptFunctionSelection(functions,roleName)
+    if(index!=undefined){
+
+      const payload = await handleUserSelection(roleName,index)
+      this.socket.emit("executeFunction",{index,payload,roleName,user})
+    }
+
     // const item = await promptFunctionSelection(this.socket,functions,roleName)
 
     // this.socket.emit("addItem",item)
