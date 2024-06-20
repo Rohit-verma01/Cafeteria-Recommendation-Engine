@@ -1,29 +1,39 @@
 import { pool } from "../config/db_connection";
 import { RowDataPacket } from "mysql2";
+import { INSERT_FOODITEM, UPDATE_AVAILABILITY, UPDATE_PRICE, UPDATE_PRICE_AND_AVAILABILITY } from "../queries/userQueries";
 
 export class MenuItemRepository {
     async getAllMenuItems(): Promise<any[]> {
-        const [rows] = await pool.query<RowDataPacket[]>('SELECT * FROM MenuItem');
+        const [rows] = await pool.query<RowDataPacket[]>('SELECT * FROM fooditem');
+        console.log(rows);
         return rows;
     }
 
     async addMenuItem(item: any) {
         const { foodName, price, categoryId } = item;
-        const query = 'INSERT INTO fooditem (item_name, item_price, category_id) VALUES (?, ?, ?)';
-        await pool.execute(query, [foodName, price, categoryId]);
+        await pool.query<RowDataPacket[]>(INSERT_FOODITEM, [foodName, price, categoryId]);
         return "Item Added Successfully"
     }
 
-    async deleteMenuItem(itemId: number): Promise<void> {
-        const query = 'DELETE FROM MenuItem WHERE id = ?';
-        await pool.execute(query, [itemId]);
-        console.log("Menu item deleted with ID:", itemId);
+    async deleteMenuItem(name: string){
+        const query = 'DELETE FROM fooditem WHERE item_name = ?';
+        await pool.execute(query, [name]);
+        return `${name} item deleted`
     }
 
-    async updateMenuItem(item: { id: number; item_name: string; item_price: number; category_id: number }): Promise<void> {
-        const { id, item_name, item_price, category_id } = item;
-        const query = 'UPDATE MenuItem SET item_name = ?, item_price = ?, category_id = ? WHERE id = ?';
-        await pool.execute(query, [item_name, item_price, category_id, id]);
-        console.log("Menu item updated:", item);
+    async updateMenuItem(item: any): Promise<any> {
+        const {foodName,foodPrice,availabilityStatus } = item;
+        if (foodPrice && availabilityStatus) {
+            await pool.execute(UPDATE_PRICE_AND_AVAILABILITY, [foodPrice, availabilityStatus, foodName]);
+            return "Item price and availability updated successfully";
+        } else if (foodPrice) {
+            await pool.execute(UPDATE_PRICE, [foodPrice, foodName]);
+            return "Item price updated successfully";
+        } else if (availabilityStatus) {
+            await pool.execute(UPDATE_AVAILABILITY, [availabilityStatus, foodName]);
+            return "Item availability updated successfully";
+        } else {
+            return "No updates were made as no new values were provided";
+        }
     }
 }

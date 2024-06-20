@@ -37,14 +37,17 @@ class Server {
         "userFound",
         `Welocme ${user.firstname} ${user.lastname} to the Cafeteria Recommendation System`
       );
-      // this.sendAvailableFunctions()
       this.sendAvailableFunctions(socket, role!.role_name, user);
     } else {
       socket.emit("userNotFound", "User not found");
     }
   };
 
-  private sendAvailableFunctions = (socket: Socket, roleName: string, user: any) => {
+  private sendAvailableFunctions = (
+    socket: Socket,
+    roleName: string,
+    user: any
+  ) => {
     const functions: string[] | null = getFunctionsByRole(roleName);
     socket.emit("availableFunctions", {
       functions,
@@ -57,19 +60,25 @@ class Server {
     console.log("user disconnected");
   };
 
-  private executeFunction = (socket: Socket) =>async ({index,payload,roleName,user}:any) => {
-    switch (roleName){
-      case "admin":
-        console.log("Admin is adding item into the menu");
-        const adminController = new AdminController();
-        const result = await adminController.executeFunctionality(index,payload)
-        socket.emit("message",result)
+  private executeFunction =
+    (socket: Socket) =>
+    async ({ index, payload, roleName, user }: any) => {
+      switch (roleName) {
+        case "admin":
+          console.log("Admin is adding item into the menu");
+          const adminController = new AdminController();
+          const result = await adminController.executeFunctionality(
+            index,
+            payload
+          );
 
-      case "chef":
-      case "employee":
-    }
-    this.sendAvailableFunctions(socket, roleName, user);
-  };
+          socket.emit("message", result);
+
+        case "chef":
+        case "employee":
+      }
+      this.sendAvailableFunctions(socket, roleName, user);
+    };
 
   public start() {
     this.httpServer.listen(this.port, () => {

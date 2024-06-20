@@ -1,8 +1,7 @@
 import { Socket } from "socket.io-client";
-import { promptForFoodItemDetails, promptInput } from "./prompts";
+import { promptForDeleteItem, promptForFoodItemDetails, promptForUpdateFoodItem, promptInput } from "./prompts";
 
 export const showAvailableFunctions = (functions: string[]) => {
-  console.log("Available functionalities:", functions);
   functions.forEach((func: string, index: number) => {
     console.log(`${index + 1}. ${func}`);
   });
@@ -15,7 +14,6 @@ export const handleUserSelection = async(
   switch (roleName) {
     case "admin":
       return await handleAdminInput(selectedIndex);
-      break;
     case "chef":
       console.log("chef");
       break;
@@ -30,18 +28,14 @@ export const handleAdminInput = async (
 ) => {
   switch (selectedIndex) {
     case 1:
-      // promptForFoodItemDetails(socket)
-      // console.log("Handle Admin Input",promptForFoodItemDetails(socket))
-      return await promptForFoodItemDetails()
-      break;
+      return await promptForFoodItemDetails();
     case 2:
-      console.log("2nd");
-      break;
+      return await promptForUpdateFoodItem();
     case 3:
-      console.log("3rd");
+      return await promptForDeleteItem();
       break;
     case 4:
-      console.log("4th");
+      return "";
       break;
   }
 };

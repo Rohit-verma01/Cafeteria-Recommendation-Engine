@@ -27,7 +27,7 @@ export const promptFunctionSelection = async (
   }
 };
 
-export const promptForFoodItemDetails = async (): Promise<any> => {
+export const promptForFoodItemDetails = async () => {
   const foodName = await promptInput("Enter food item name: ");
   const price = await promptInput("Enter food item price: ");
   console.log("Below are the categories :");
@@ -40,3 +40,21 @@ export const promptForFoodItemDetails = async (): Promise<any> => {
   };
   return foodItemDetails;
 };
+
+export const promptForUpdateFoodItem = async() => {
+  const foodName = await promptInput("Enter food name: ");
+  const wantToUpdateItemPrice = await promptInput("Is you want to update price(y/n): ");
+  let foodPrice="",availabilityStatus="";
+  if(wantToUpdateItemPrice==='y')
+    foodPrice = await promptInput("Enter food price: ");
+  const wantToUpdateItemStatus = await promptInput("Is you want to update status(y/n): ");
+  if(wantToUpdateItemStatus==='y')
+    availabilityStatus = await promptInput("Change availability status to true or false: ");
+  console.log(foodName,parseInt(foodPrice),availabilityStatus)
+  return {foodName,foodPrice:parseInt(foodPrice),availabilityStatus}
+}
+
+export const promptForDeleteItem = async() => {
+  const foodName = await promptInput("Enter food name to delete: ");
+  return foodName
+}

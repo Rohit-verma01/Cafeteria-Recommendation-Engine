@@ -32,9 +32,10 @@ class Client {
     console.log(message);
   };
 
-  private onGettingMessage = (message: string) => {
-    
-    console.log(message);
+  private onGettingMessage = (message:string|any) => {
+      // if(message.length>1){
+        console.log(message)
+      // }
   };
 
   private onAvailableFunctions = async ({
@@ -53,10 +54,6 @@ class Client {
       const payload = await handleUserSelection(roleName,index)
       this.socket.emit("executeFunction",{index,payload,roleName,user})
     }
-
-    // const item = await promptFunctionSelection(this.socket,functions,roleName)
-
-    // this.socket.emit("addItem",item)
    
   };
 

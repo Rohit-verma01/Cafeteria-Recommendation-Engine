@@ -9,6 +9,7 @@ export class MenuItemService {
   
     async viewMenu() {
       // Implement viewMenu functionality
+      return await this.menuItemRepository.getAllMenuItems();
     }
   
     async addItem(item: any) {
@@ -16,10 +17,11 @@ export class MenuItemService {
     }
   
     async updateItem(item: any) {
-      // Implement updateItem functionality
+      return await this.menuItemRepository.updateMenuItem(item);
     }
   
-    async deleteItem(itemId: number) {
+    async deleteItem(name: any) {
       // Implement deleteItem functionality
+      return await this.menuItemRepository.deleteMenuItem(name);
     }
   }
