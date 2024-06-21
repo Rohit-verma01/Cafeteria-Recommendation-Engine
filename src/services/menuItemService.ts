@@ -1,14 +1,16 @@
 import { MenuItemRepository } from "../repositories/menuItemRepository";
+import { RecommendedMenuRepository } from "../repositories/recommendedMenuService";
 
 export class MenuItemService {
     private menuItemRepository: MenuItemRepository;
+    private recommendedItemRepository: RecommendedMenuRepository
   
     constructor() {
       this.menuItemRepository = new MenuItemRepository();
+      this.recommendedItemRepository = new RecommendedMenuRepository();
     }
   
     async viewMenu() {
-      // Implement viewMenu functionality
       return await this.menuItemRepository.getAllMenuItems();
     }
   
@@ -23,5 +25,9 @@ export class MenuItemService {
     async deleteItem(name: any) {
       // Implement deleteItem functionality
       return await this.menuItemRepository.deleteMenuItem(name);
+    }
+
+    async addItemInRecommendedMenu(item:any){
+      
     }
   }

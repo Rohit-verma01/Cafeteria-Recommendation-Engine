@@ -3,7 +3,7 @@ export const employeeOptionMapping=[
 ]
 
 export const chefOptionMapping=[
-    'Send Menu', 'Send Notification','View Menu','View Monthly Feedback Report'
+    'Roll Out Items', 'Send Menu','View Menu'
 ]
 
 export const adminOptionMapping=[

@@ -2,7 +2,7 @@ import { pool } from "../config/db_connection";
 import { RowDataPacket } from "mysql2";
 import { GET_ALL_ITEMS, INSERT_FOODITEM, UPDATE_AVAILABILITY, UPDATE_PRICE, UPDATE_PRICE_AND_AVAILABILITY } from "../queries/userQueries";
 
-export class MenuItemRepository {
+export class RecommendedMenuRepository {
     async getAllMenuItems(): Promise<any[]> {
         const [rows] = await pool.query<RowDataPacket[]>(GET_ALL_ITEMS);
         return rows;

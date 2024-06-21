@@ -1,6 +1,5 @@
 import { Socket } from "socket.io-client";
 import { createReadlineInterface } from "./readline";
-import { handleUserSelection } from "./clientUtils";
 import { categories, logObject } from "./category";
 
 const rl = createReadlineInterface();
@@ -43,11 +42,11 @@ export const promptForFoodItemDetails = async () => {
 
 export const promptForUpdateFoodItem = async() => {
   const foodName = await promptInput("Enter food name: ");
-  const wantToUpdateItemPrice = await promptInput("Is you want to update price(y/n): ");
+  const wantToUpdateItemPrice = await promptInput("Are you want to update price(y/n): ");
   let foodPrice="",availabilityStatus="";
   if(wantToUpdateItemPrice==='y')
     foodPrice = await promptInput("Enter food price: ");
-  const wantToUpdateItemStatus = await promptInput("Is you want to update status(y/n): ");
+  const wantToUpdateItemStatus = await promptInput("Are you want to update status(y/n): ");
   if(wantToUpdateItemStatus==='y')
     availabilityStatus = await promptInput("Change availability status to true or false: ");
   console.log(foodName,parseInt(foodPrice),availabilityStatus)
@@ -57,4 +56,28 @@ export const promptForUpdateFoodItem = async() => {
 export const promptForDeleteItem = async() => {
   const foodName = await promptInput("Enter food name to delete: ");
   return foodName
+}
+
+export const promptForRollOut = async()=>{
+
+  let noOfItem = parseInt(await promptInput("Enter number of breakfast you want for recommendation: "));
+  const breakfast=[],lunch=[],dinner=[];
+  for(let i=0;i<noOfItem;i++){
+    const id = parseInt(await promptInput(`Enter ${i+1} food item id for breakfast: `))
+    breakfast.push(id);
+  }
+  noOfItem = parseInt(await promptInput("Enter number of lunch item you want for recommendation: "))
+  for(let i=0;i<noOfItem;i++){
+    const id = parseInt(await promptInput(`Enter ${i+1} food item id for lunch: `))
+    lunch.push(id);
+  }
+  noOfItem = parseInt(await promptInput("Enter number of dinner item you want for recommendation: "))
+  for(let i=0;i<noOfItem;i++){
+    const id = parseInt(await promptInput(`Enter ${i+1} food item id for dinner: `))
+    dinner.push(id);
+  }
+  return {breakfast,lunch,dinner};
+// socket.emit("View Menu")
+// const foodItem = await promptInput("Enter food name: ")
+// console.log(foodItem)
 }

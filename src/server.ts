@@ -3,6 +3,7 @@ import { Server as SocketIOServer, Socket } from "socket.io";
 import { UserController } from "./controllers/userController";
 import { getFunctionsByRole } from "./utils/serverUtils";
 import { AdminController } from "./controllers/adminController";
+import { ChefController } from "./controllers/chefController";
 
 class Server {
   private httpServer: HTTPServer;
@@ -19,7 +20,7 @@ class Server {
   private setupSocketHandlers() {
     this.io.on("connection", (socket: Socket) => {
       console.log("a user connected");
-
+      socket.on("showMenu", this.sendMenu(socket));
       socket.on("authenticateUser", this.handleAuthenticateUser(socket));
       socket.on("disconnect", this.handleDisconnect);
       socket.on("executeFunction", this.executeFunction(socket));
@@ -60,21 +61,28 @@ class Server {
     console.log("user disconnected");
   };
 
+  private sendMenu = (socket: Socket) => async () => {
+    const adminController = new AdminController();
+    const result = await adminController.executeFunctionality(4, "");
+    socket.emit("sendMenu", result);
+  };
+
   private executeFunction =
     (socket: Socket) =>
     async ({ index, payload, roleName, user }: any) => {
+      let result: any = "";
       switch (roleName) {
         case "admin":
-          console.log("Admin is adding item into the menu");
           const adminController = new AdminController();
-          const result = await adminController.executeFunctionality(
-            index,
-            payload
-          );
+          result = await adminController.executeFunctionality(index, payload);
+          console.log("result = ", result);
 
           socket.emit("message", result);
 
         case "chef":
+          const chefController = new ChefController();
+          result = await chefController.executeFunctionality(index, payload);
+          socket.emit("message", result);
         case "employee":
       }
       this.sendAvailableFunctions(socket, roleName, user);

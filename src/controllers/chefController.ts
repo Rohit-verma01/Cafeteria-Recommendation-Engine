@@ -1,14 +1,16 @@
 import { User } from "../models/user";
+import { MenuItemService } from "../services/menuItemService";
 
 export class ChefController {
-    private chef: User;
+  private menuItemService: MenuItemService;
 
-    constructor(chef: User) {
-        this.chef = chef;
-    }
+  constructor() {
+    this.menuItemService = new MenuItemService();
+  }
 
-    decideMenu = () => {
-        console.log("Chef is deciding the menu");
+    rollOutItems = async(payload:any) => {
+        console.log("Chef is rolling out the item");
+        this.menuItemService
         // Implement the actual functionality here
     };
 
@@ -21,4 +23,19 @@ export class ChefController {
         console.log("Chef is viewing feedback");
         // Implement the actual functionality here
     };
+
+    async executeFunctionality(index: number, payload: any) {
+        switch (index) {
+          case 1:
+            return this.rollOutItems(payload);
+          case 2:
+            // return this.updateMenuItem(payload);
+          case 3:
+            // return this.deleteMenuItem(payload)
+          case 4:
+            return this.viewMenu();
+          default:
+            console.error("Invalid function index for admin");
+        }
+    }
 }
