@@ -1,6 +1,7 @@
 import { Socket } from "socket.io-client";
 import { createReadlineInterface } from "./readline";
 import { categories, logObject } from "./category";
+import { showAvailableFunctions, validateUniqueItems } from "./clientUtils";
 
 const rl = createReadlineInterface();
 
@@ -58,7 +59,7 @@ export const promptForDeleteItem = async() => {
   return foodName
 }
 
-export const promptForRollOut = async()=>{
+export const promptForRollOut = async(functions:any)=>{
 
   let noOfItem = parseInt(await promptInput("Enter number of breakfast you want for recommendation: "));
   const breakfast=[],lunch=[],dinner=[];
@@ -76,7 +77,11 @@ export const promptForRollOut = async()=>{
     const id = parseInt(await promptInput(`Enter ${i+1} food item id for dinner: `))
     dinner.push(id);
   }
-  return {breakfast,lunch,dinner};
+  if(validateUniqueItems({breakfast,lunch,dinner}))
+    return {breakfast,lunch,dinner}
+  else
+    promptForRollOut(functions)
+  
 // socket.emit("View Menu")
 // const foodItem = await promptInput("Enter food name: ")
 // console.log(foodItem)

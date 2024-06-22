@@ -18,7 +18,7 @@ class Client {
     this.socket.on("error", this.onError);
     this.socket.on("userNotFound", this.onUserNotFound);
     this.socket.on("disconnect",this.onServerDisconnect);
-    this.socket.on("message",this.onGettingMessage);
+    this.socket.on("message",this.displayMessage);
     this.socket.on("Send Menu",this.showMenu)
   }
 
@@ -36,12 +36,15 @@ class Client {
     console.log(message);
   };
 
-  private onGettingMessage = (response:any) => {
-      const {data,type} = response
-      if(type==="message")
-        console.log(data)
-      else if(type==="foodItem")
-        console.table(data,['itemId','item', 'price', 'category'])
+  private displayMessage = (response:any) => {
+      if(response){
+
+        const {data,type} = response
+        if(type==="message")
+          console.log(data)
+        else if(type==="foodItem")
+          console.table(data,['itemId','item', 'price', 'category'])
+      }
   };
 
   private onAvailableFunctions = async ({
@@ -57,8 +60,7 @@ class Client {
     const index = await promptFunctionSelection(functions,roleName)
 
     if(index!=undefined){
-      const payload = await handleUserSelection(roleName,index,this.socket)
-      console.log("rollout = ",payload)
+      const payload = await handleUserSelection(roleName,index,this.socket,functions)
       this.socket.emit("executeFunction",{index,payload,roleName,user})
     }
    

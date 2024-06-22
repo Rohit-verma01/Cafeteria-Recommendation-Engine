@@ -7,7 +7,7 @@ export const showAvailableFunctions = (functions: string[]) => {
   });
 };
 
-export const rollOutItems = async (socket:Socket) => {
+export const rollOutItems = async (socket:Socket,functions:any) => {
   await new Promise<void>((resolve) => {
     socket.emit("showMenu");
     socket.on("sendMenu", async (response) => {
@@ -16,22 +16,22 @@ export const rollOutItems = async (socket:Socket) => {
       resolve();
     });
   });
-  return await promptForRollOut();
+  return await promptForRollOut(functions);
 }
 
 export const handleUserSelection = async(
   roleName: string,
   selectedIndex: number,
   socket:Socket,
+  functions:any,
 ) => {
   switch (roleName) {
     case "admin":
       return await handleAdminInput(selectedIndex);
     case "chef":
-      return await handleChefInput(selectedIndex,socket);
+      return await handleChefInput(selectedIndex,socket,functions);
     case "employee":
-      console.log("employee");
-      break;
+      
   }
 };
 
@@ -52,15 +52,16 @@ export const handleAdminInput = async (
 
 export const handleChefInput = async (
   selectedIndex: number,
-  socket:Socket
+  socket:Socket,
+  functions:any
 ) => {
   switch (selectedIndex) {
     case 1:
-      return await rollOutItems(socket);
+      return await rollOutItems(socket,functions);
     case 2:
       return await promptForUpdateFoodItem();
     case 3:
-      return await promptForDeleteItem();
+      return ""
       break;
     case 4:
       return "";
@@ -69,3 +70,18 @@ export const handleChefInput = async (
 };
 
 
+export const validateUniqueItems = (items: { [key: string]: number[] }): boolean =>{
+  const allItems = new Set<number>();
+  for (const mealType in items) {
+    const itemIds = items[mealType];
+    for (const itemId of itemIds) {
+      if (allItems.has(itemId)) {
+        console.error(`Item ID ${itemId} is duplicated across meal types.`);
+        return false;
+      }
+      allItems.add(itemId);
+    }
+  }
+  console.log("item = ",allItems)
+  return true;
+}

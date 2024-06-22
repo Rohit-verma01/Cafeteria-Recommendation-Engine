@@ -23,11 +23,10 @@ export class MenuItemService {
     }
   
     async deleteItem(name: any) {
-      // Implement deleteItem functionality
       return await this.menuItemRepository.deleteMenuItem(name);
     }
 
-    async addItemInRecommendedMenu(item:any){
-      
+    async addItemInRecommendedMenu (item:any){
+      return await this.recommendedItemRepository.addItem(item)
     }
   }

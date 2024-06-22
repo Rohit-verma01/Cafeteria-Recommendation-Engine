@@ -10,13 +10,16 @@ export class ChefController {
 
     rollOutItems = async(payload:any) => {
         console.log("Chef is rolling out the item");
-        this.menuItemService
+        const data = await this.menuItemService.addItemInRecommendedMenu(payload);
+        return {data,type:"message"}
         // Implement the actual functionality here
     };
 
-    viewMenu = () => {
-        console.log("Chef is viewing the menu");
-        // Implement the actual functionality here
+    viewMenu = async () => {
+      console.log("Chef is viewing the menu");
+      const data = await this.menuItemService.viewMenu();
+      return {data,type:"foodItem"}
+      // return await this.menuItemService.viewMenu();
     };
 
     viewFeedback = () => {
@@ -31,7 +34,7 @@ export class ChefController {
           case 2:
             // return this.updateMenuItem(payload);
           case 3:
-            // return this.deleteMenuItem(payload)
+            return this.viewMenu();
           case 4:
             return this.viewMenu();
           default:

@@ -75,8 +75,6 @@ class Server {
         case "admin":
           const adminController = new AdminController();
           result = await adminController.executeFunctionality(index, payload);
-          console.log("result = ", result);
-
           socket.emit("message", result);
 
         case "chef":
