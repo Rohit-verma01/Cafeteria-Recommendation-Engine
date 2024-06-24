@@ -1,7 +1,11 @@
 import { Socket } from "socket.io-client";
 import { createReadlineInterface } from "./readline";
 import { categories, logObject } from "./category";
-import { showAvailableFunctions, validateUniqueItems } from "./clientUtils";
+import {
+  showAvailableFunctions,
+  validateUniqueItems,
+  validateVotedId,
+} from "./clientUtils";
 
 const rl = createReadlineInterface();
 
@@ -19,11 +23,15 @@ export const promptFunctionSelection = async (
   const selection = await promptInput("Select a function number: ");
   const selectedIndex = parseInt(selection);
 
-  if (selectedIndex!=undefined && selectedIndex >= 1 && selectedIndex <= functions.length) {
+  if (
+    selectedIndex != undefined &&
+    selectedIndex >= 1 &&
+    selectedIndex <= functions.length
+  ) {
     return selectedIndex;
   } else {
     console.error("Invalid function number");
-    promptFunctionSelection(functions,roleName);
+    promptFunctionSelection(functions, roleName);
   }
 };
 
@@ -41,48 +49,85 @@ export const promptForFoodItemDetails = async () => {
   return foodItemDetails;
 };
 
-export const promptForUpdateFoodItem = async() => {
+export const promptForUpdateFoodItem = async () => {
   const foodName = await promptInput("Enter food name: ");
-  const wantToUpdateItemPrice = await promptInput("Are you want to update price(y/n): ");
-  let foodPrice="",availabilityStatus="";
-  if(wantToUpdateItemPrice==='y')
+  const wantToUpdateItemPrice = await promptInput(
+    "Are you want to update price(y/n): "
+  );
+  let foodPrice = "",
+    availabilityStatus = "";
+  if (wantToUpdateItemPrice === "y")
     foodPrice = await promptInput("Enter food price: ");
-  const wantToUpdateItemStatus = await promptInput("Are you want to update status(y/n): ");
-  if(wantToUpdateItemStatus==='y')
-    availabilityStatus = await promptInput("Change availability status to true or false: ");
-  console.log(foodName,parseInt(foodPrice),availabilityStatus)
-  return {foodName,foodPrice:parseInt(foodPrice),availabilityStatus}
-}
+  const wantToUpdateItemStatus = await promptInput(
+    "Are you want to update status(y/n): "
+  );
+  if (wantToUpdateItemStatus === "y")
+    availabilityStatus = await promptInput(
+      "Change availability status to true or false: "
+    );
+  console.log(foodName, parseInt(foodPrice), availabilityStatus);
+  return { foodName, foodPrice: parseInt(foodPrice), availabilityStatus };
+};
 
-export const promptForDeleteItem = async() => {
+export const promptForDeleteItem = async () => {
   const foodName = await promptInput("Enter food name to delete: ");
-  return foodName
-}
+  return foodName;
+};
 
-export const promptForRollOut = async(functions:any)=>{
-
-  let noOfItem = parseInt(await promptInput("Enter number of breakfast you want for recommendation: "));
-  const breakfast=[],lunch=[],dinner=[];
-  for(let i=0;i<noOfItem;i++){
-    const id = parseInt(await promptInput(`Enter ${i+1} food item id for breakfast: `))
+export const promptForRollOut = async (functions: any) => {
+  let noOfItem = parseInt(
+    await promptInput("Enter number of breakfast you want for recommendation: ")
+  );
+  const breakfast = [],
+    lunch = [],
+    dinner = [];
+  for (let i = 0; i < noOfItem; i++) {
+    const id = parseInt(
+      await promptInput(`Enter ${i + 1} food item id for breakfast: `)
+    );
     breakfast.push(id);
   }
-  noOfItem = parseInt(await promptInput("Enter number of lunch item you want for recommendation: "))
-  for(let i=0;i<noOfItem;i++){
-    const id = parseInt(await promptInput(`Enter ${i+1} food item id for lunch: `))
+  noOfItem = parseInt(
+    await promptInput(
+      "Enter number of lunch item you want for recommendation: "
+    )
+  );
+  for (let i = 0; i < noOfItem; i++) {
+    const id = parseInt(
+      await promptInput(`Enter ${i + 1} food item id for lunch: `)
+    );
     lunch.push(id);
   }
-  noOfItem = parseInt(await promptInput("Enter number of dinner item you want for recommendation: "))
-  for(let i=0;i<noOfItem;i++){
-    const id = parseInt(await promptInput(`Enter ${i+1} food item id for dinner: `))
+  noOfItem = parseInt(
+    await promptInput(
+      "Enter number of dinner item you want for recommendation: "
+    )
+  );
+  for (let i = 0; i < noOfItem; i++) {
+    const id = parseInt(
+      await promptInput(`Enter ${i + 1} food item id for dinner: `)
+    );
     dinner.push(id);
   }
-  if(validateUniqueItems({breakfast,lunch,dinner}))
-    return {breakfast,lunch,dinner}
-  else
-    promptForRollOut(functions)
-  
-// socket.emit("View Menu")
-// const foodItem = await promptInput("Enter food name: ")
-// console.log(foodItem)
-}
+  if (validateUniqueItems({ breakfast, lunch, dinner }))
+    return { breakfast, lunch, dinner };
+  else promptForRollOut(functions);
+};
+
+export const promptForVote = async (menu: any) => {
+  while(true){
+
+    const Id = await promptInput(
+      "Enter comma seperated item id's for which you wanted to vote: "
+    );
+    const votedFoodItemId = Id.split(",").map((item) => parseInt(item));
+    const itemWithMealType = menu.map((item: any) => {
+      return {
+        item_id: item.item_id,
+        meal_type_id: item.meal_type_id,
+      };
+    });
+    if (validateVotedId(itemWithMealType, votedFoodItemId))
+      return votedFoodItemId;
+  }
+};

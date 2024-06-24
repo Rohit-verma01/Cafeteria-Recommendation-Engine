@@ -4,6 +4,7 @@ import { UserController } from "./controllers/userController";
 import { getFunctionsByRole } from "./utils/serverUtils";
 import { AdminController } from "./controllers/adminController";
 import { ChefController } from "./controllers/chefController";
+import { EmployeeController } from "./controllers/employeeController";
 
 class Server {
   private httpServer: HTTPServer;
@@ -24,6 +25,7 @@ class Server {
       socket.on("authenticateUser", this.handleAuthenticateUser(socket));
       socket.on("disconnect", this.handleDisconnect);
       socket.on("executeFunction", this.executeFunction(socket));
+      socket.on("showRollOutMenu",this.sendRollOutMenu(socket))
     });
   }
 
@@ -67,6 +69,12 @@ class Server {
     socket.emit("sendMenu", result);
   };
 
+  private sendRollOutMenu = (socket: Socket) => async () => {
+    const employeeController = new EmployeeController();
+    const result = await employeeController.executeFunctionality(5, "","");
+    socket.emit("sendRecommendedMenu", result);
+  };
+
   private executeFunction =
     (socket: Socket) =>
     async ({ index, payload, roleName, user }: any) => {
@@ -82,6 +90,8 @@ class Server {
           result = await chefController.executeFunctionality(index, payload);
           socket.emit("message", result);
         case "employee":
+          const employeeController = new EmployeeController();
+          result = await employeeController.executeFunctionality(index,payload,user);
       }
       this.sendAvailableFunctions(socket, roleName, user);
     };

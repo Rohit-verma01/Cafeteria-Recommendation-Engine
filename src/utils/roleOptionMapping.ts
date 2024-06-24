@@ -1,5 +1,5 @@
 export const employeeOptionMapping=[
-    'View Menu', 'View Feedback', 'Give Feedback'
+    'View Menu', 'View Feedback', 'Give Feedback','Vote for Recommended Menu'
 ]
 
 export const chefOptionMapping=[

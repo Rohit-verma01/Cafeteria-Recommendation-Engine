@@ -1,5 +1,5 @@
 import { MenuItemRepository } from "../repositories/menuItemRepository";
-import { RecommendedMenuRepository } from "../repositories/recommendedMenuService";
+import { RecommendedMenuRepository } from "../repositories/recommendedMenuRepository";
 
 export class MenuItemService {
     private menuItemRepository: MenuItemRepository;

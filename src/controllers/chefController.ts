@@ -1,4 +1,3 @@
-import { User } from "../models/user";
 import { MenuItemService } from "../services/menuItemService";
 
 export class ChefController {
