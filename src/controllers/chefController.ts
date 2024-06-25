@@ -11,19 +11,16 @@ export class ChefController {
         console.log("Chef is rolling out the item");
         const data = await this.menuItemService.addItemInRecommendedMenu(payload);
         return {data,type:"message"}
-        // Implement the actual functionality here
     };
 
     viewMenu = async () => {
       console.log("Chef is viewing the menu");
       const data = await this.menuItemService.viewMenu();
       return {data,type:"foodItem"}
-      // return await this.menuItemService.viewMenu();
     };
 
     viewFeedback = () => {
         console.log("Chef is viewing feedback");
-        // Implement the actual functionality here
     };
 
     async executeFunctionality(index: number, payload: any) {

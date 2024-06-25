@@ -32,6 +32,7 @@ class Client {
   private showMenu = (data:any) => {
     console.log(data)
   }
+
   private onUserFound = (message: string) => {
     console.log(message);
   };
@@ -44,6 +45,8 @@ class Client {
           console.log(data)
         else if(type==="foodItem")
           console.table(data,['itemId','item', 'price', 'category'])
+        else
+          console.log(data)
       }
   };
 

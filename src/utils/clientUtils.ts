@@ -1,6 +1,7 @@
 import { Socket } from "socket.io-client";
 import {
   promptForDeleteItem,
+  promptForFeedback,
   promptForFoodItemDetails,
   promptForRollOut,
   promptForUpdateFoodItem,
@@ -15,6 +16,18 @@ export const showAvailableFunctions = (functions: string[]) => {
 };
 
 export const voteForItems = async (socket: Socket) => {
+  await new Promise<void>((resolve) => {
+    socket.emit("showMenu");
+    socket.on("sendMenu", async (response) => {
+      console.log("here", response);
+      console.table(response.data, ["itemId", "item", "price", "category"]);
+      resolve();
+    });
+  });
+  return await promptForFeedback();
+};
+
+export const giveFeedback = async (socket: Socket) => {
   let menu = {};
   await new Promise<void>((resolve) => {
     socket.emit("showRollOutMenu");
@@ -25,7 +38,7 @@ export const voteForItems = async (socket: Socket) => {
       resolve();
     });
   });
-  return await promptForVote(menu);
+  return await promptForFeedback();
 };
 
 export const rollOutItems = async (socket: Socket, functions: any) => {
@@ -81,10 +94,8 @@ export const handleChefInput = async (
       return await promptForUpdateFoodItem();
     case 3:
       return "";
-      break;
     case 4:
       return "";
-      break;
   }
 };
 
@@ -94,13 +105,12 @@ export const handleEmployeeInput = async (
 ) => {
   switch (selectedIndex) {
     case 1:
-      // return await rollOutItems(socket,functions);
-      break;
+      return "";
     case 2:
       // return await promptForUpdateFoodItem();
       break;
     case 3:
-      return "";
+      return await giveFeedback(socket);
     case 4:
       return await voteForItems(socket);
   }
@@ -128,7 +138,7 @@ export const validateVotedId = (
   itemWithMealType: any,
   votedFoodItemId: any
 ): boolean => {
-  let flag=true;
+  let flag = true;
   const isItemsPresent = votedFoodItemId.every((itemId: number) =>
     itemWithMealType.some((item: any) => item.item_id === itemId)
   );
@@ -142,17 +152,17 @@ export const validateVotedId = (
   );
   if (!isItemsUnique) {
     console.log("Please vote for different items only\n");
-    flag=false;
+    flag = false;
   }
   if (!isItemsPresent) {
     console.log("Please vote from the given menu only\n");
-    flag=false
+    flag = false;
   }
   if (!isItemBelongToDifferentMeal) {
     console.log("Please vote only for one Item from one meal type\n");
-    flag=false
+    flag = false;
   }
-  return flag
+  return flag;
 };
 
 export const checkItemsBelongToDifferentMeal = (

@@ -11,27 +11,23 @@ export class AdminController {
     console.log("Admin is viewing the menu");
     const data = await this.menuItemService.viewMenu();
     return {data,type:"foodItem"}
-    // return await this.menuItemService.viewMenu();
   };
 
   addMenuItem = async (payload: any) => {
     const data = await this.menuItemService.addItem(payload);
     return {data,type:"message"}
-    // return await this.menuItemService.addItem(payload);
   };
 
   deleteMenuItem = async(payload:any) => {
     console.log("Admin is deleting a menu item");
     const data = await this.menuItemService.deleteItem(payload);
     return {data,type:"message"}
-    // return await this.menuItemService.deleteItem(payload);
   };
 
   updateMenuItem = async (payload: any) => {
     console.log("Admin is updating a menu item");
     const data = await this.menuItemService.updateItem(payload);
     return {data,type:"foodItem"}
-    // return await this.menuItemService.updateItem(payload);
   };
 
   async executeFunctionality(index: number, payload: any) {

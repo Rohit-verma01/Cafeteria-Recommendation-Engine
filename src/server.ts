@@ -25,7 +25,7 @@ class Server {
       socket.on("authenticateUser", this.handleAuthenticateUser(socket));
       socket.on("disconnect", this.handleDisconnect);
       socket.on("executeFunction", this.executeFunction(socket));
-      socket.on("showRollOutMenu",this.sendRollOutMenu(socket))
+      socket.on("showRollOutMenu", this.sendRollOutMenu(socket));
     });
   }
 
@@ -71,7 +71,7 @@ class Server {
 
   private sendRollOutMenu = (socket: Socket) => async () => {
     const employeeController = new EmployeeController();
-    const result = await employeeController.executeFunctionality(5, "","");
+    const result = await employeeController.executeFunctionality(5, "", "");
     socket.emit("sendRecommendedMenu", result);
   };
 
@@ -91,7 +91,12 @@ class Server {
           socket.emit("message", result);
         case "employee":
           const employeeController = new EmployeeController();
-          result = await employeeController.executeFunctionality(index,payload,user);
+          result = await employeeController.executeFunctionality(
+            index,
+            payload,
+            user
+          );
+          socket.emit("message",result)
       }
       this.sendAvailableFunctions(socket, roleName, user);
     };
