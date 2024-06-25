@@ -16,18 +16,6 @@ export const showAvailableFunctions = (functions: string[]) => {
 };
 
 export const voteForItems = async (socket: Socket) => {
-  await new Promise<void>((resolve) => {
-    socket.emit("showMenu");
-    socket.on("sendMenu", async (response) => {
-      console.log("here", response);
-      console.table(response.data, ["itemId", "item", "price", "category"]);
-      resolve();
-    });
-  });
-  return await promptForFeedback();
-};
-
-export const giveFeedback = async (socket: Socket) => {
   let menu = {};
   await new Promise<void>((resolve) => {
     socket.emit("showRollOutMenu");
@@ -35,6 +23,18 @@ export const giveFeedback = async (socket: Socket) => {
       console.log("here", response);
       menu = response.data;
       console.table(response.data);
+      resolve();
+    });
+  });
+  return await promptForVote(menu);
+};
+
+export const giveFeedback = async (socket: Socket) => {
+  await new Promise<void>((resolve) => {
+    socket.emit("showMenu");
+    socket.on("sendMenu", async (response) => {
+      console.log("here", response);
+      console.table(response.data, ["itemId", "item", "price", "category"]);
       resolve();
     });
   });

@@ -1,5 +1,5 @@
 import { pool } from "../config/db_connection";
-import { GET_ROLE_BY_ID, GET_USER_BY_ID } from "../queries/userQueries";
+import { GET_ROLE_BY_ID, GET_USER_BY_ID } from "../queries/queries";
 import { IUser, IRole } from "../types";
 import { RowDataPacket } from "mysql2";
 
@@ -20,7 +20,7 @@ export class UserRepository {
       }
     } catch (error) {
       console.error("Error querying the database:", error);
-      return "Failed to fetch user details";
+      return "Failed to fetch user details.\n";
     }
   }
 
@@ -43,7 +43,7 @@ export class UserRepository {
       }
     } catch (error) {
       console.error("Error querying the database:", error);
-      return "Failed to fetch role details";
+      return "Failed to fetch role details\n";
     }
   }
 }

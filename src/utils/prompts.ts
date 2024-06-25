@@ -115,8 +115,7 @@ export const promptForRollOut = async (functions: any) => {
 };
 
 export const promptForVote = async (menu: any) => {
-
-  while(true){
+  while (true) {
     const Id = await promptInput(
       "Enter comma seperated item id's for which you wanted to vote: "
     );
@@ -130,13 +129,16 @@ export const promptForVote = async (menu: any) => {
     if (validateVotedId(itemWithMealType, votedFoodItemId))
       return votedFoodItemId;
   }
-
 };
 
-export const promptForFeedback = async() => {
-  const itemId = parseInt(await promptInput("Enter Item ID to give feedback for: "));
-  const rating = parseInt(await promptInput(`Enter rating for item ID ${itemId}: `));
+export const promptForFeedback = async () => {
+  const itemId = parseInt(
+    await promptInput("Enter Item ID to give feedback for: ")
+  );
+  const rating = parseInt(
+    await promptInput(`Enter rating for item ID ${itemId}: `)
+  );
   const comment = await promptInput(`Enter comment for ${itemId}: `);
-  console.log({itemId,rating,comment})
-  return {itemId,rating,comment}
-}
+  console.log({ itemId, rating, comment });
+  return { itemId, rating, comment };
+};

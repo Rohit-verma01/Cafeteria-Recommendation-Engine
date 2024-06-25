@@ -1,6 +1,6 @@
 import { pool } from "../config/db_connection";
 import { RowDataPacket } from "mysql2";
-import { GET_ALL_RECOMMENDED_MENU_ITEMS } from "../queries/userQueries";
+import { GET_ALL_RECOMMENDED_MENU_ITEMS } from "../queries/queries";
 
 export class RecommendedMenuRepository {
   async viewRecommededItems() {
@@ -33,10 +33,10 @@ export class RecommendedMenuRepository {
 
     try {
       await pool.execute(query);
-      return "Items added in recommended menu successfully";
+      return "Items added in recommended menu successfully\n";
     } catch (error) {
       console.error("Error adding items to recommended menu:", error);
-      return "Failed to add items to recommended menu.";
+      return "Failed to add items to recommended menu.\n";
     }
   }
 }
