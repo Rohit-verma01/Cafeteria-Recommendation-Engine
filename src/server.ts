@@ -31,10 +31,10 @@ class Server {
 
   private handleAuthenticateUser = (socket: Socket) => async (id: number) => {
     const userController = new UserController();
-    const user = await userController.fetchUser(id);
+    const user:any = await userController.fetchUser(id);
 
     if (user) {
-      const role = await userController.fetchRole(user.role_id);
+      const role:any = await userController.fetchRole(user.role_id);
       socket.emit("userFound", "Login Successfully");
       socket.emit(
         "userFound",

@@ -1,14 +1,19 @@
-import { IUser, IRole } from '../types';
-import { fetchUserById, fetchRolebyId } from '../services/userService';
+
+import { UserService } from '../services/userService';
 
 export class UserController {
-
-    async fetchUser(id: number): Promise<IUser | null> {
-        return await fetchUserById(id);
+    private userService: UserService;
+  
+    constructor() {
+      this.userService = new UserService();
     }
 
-    async fetchRole(roleId: number): Promise<IRole | null> {
-        return await fetchRolebyId(roleId);
+    async fetchUser(id: number) {
+        return await this.userService.fetchUserById(id);
+    }
+
+    async fetchRole(roleId: number) {
+        return await this.userService.fetchRolebyId(roleId);
     }
 
 }

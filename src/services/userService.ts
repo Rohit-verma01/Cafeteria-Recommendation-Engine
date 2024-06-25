@@ -1,19 +1,26 @@
-import { getRoleById, getUserById } from '../repositories/userRepository';
-import { IUser,IRole } from '../types';
-export const fetchUserById = async (id: number): Promise<IUser | null> => {
-    try {
-      return await getUserById(id);
-    } catch (error) {
-      console.error('Error in service while fetching user:', error);
-      return null;
-    }
-  };
+import { UserRepository } from "../repositories/userRepository";
+export class UserService {
+  private userRepository: UserRepository;
 
-export const fetchRolebyId = async (id: number): Promise<IRole | null> => {
+  constructor() {
+    this.userRepository = new UserRepository();
+  }
+
+  async fetchUserById(id: number) {
     try {
-      return await getRoleById(id);
+      return await this.userRepository.getUserById(id);
     } catch (error) {
-      console.error('Error in service while fetching user:', error);
-      return null;
+      console.error("Error in service while fetching user:", error);
+      return "Error in fetching user by ID";
     }
-  };
+  }
+
+  async fetchRolebyId(id: number) {
+    try {
+      return await this.userRepository.getRoleById(id);
+    } catch (error) {
+      console.error("Error in service while fetching user role:", error);
+      return "Error in fetching the user role";
+    }
+  }
+}

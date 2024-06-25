@@ -4,13 +4,20 @@ import { GET_ALL_RECOMMENDED_MENU_ITEMS } from "../queries/userQueries";
 
 export class RecommendedMenuRepository {
   async viewRecommededItems() {
-    const [rows] = await pool.query<RowDataPacket[]>(
-      GET_ALL_RECOMMENDED_MENU_ITEMS
-    );
-    return rows;
+    try {
+      const [rows] = await pool.query<RowDataPacket[]>(
+        GET_ALL_RECOMMENDED_MENU_ITEMS
+      );
+      return rows;
+    } catch (error) {
+      console.error("Error querying recommended menu items:", error);
+      return "Failed to fetch recommended menu items.";
+    }
   }
+
   async addItem(recommendedList: any) {
     const { breakfast, lunch, dinner } = recommendedList;
+
     const breakfastValues = breakfast
       .map((itemId: number) => `(${itemId}, 1)`)
       .join(", ");
@@ -20,9 +27,16 @@ export class RecommendedMenuRepository {
     const dinnerValues = dinner
       .map((itemId: number) => `(${itemId}, 3)`)
       .join(", ");
+
     const values = [breakfastValues, lunchValues, dinnerValues].join(", ");
     const query = `INSERT INTO RecommendedMenu (item_id, meal_type_id) VALUES ${values}`;
-    await pool.execute(query);
-    return "Items added in recommended menu successfully";
+
+    try {
+      await pool.execute(query);
+      return "Items added in recommended menu successfully";
+    } catch (error) {
+      console.error("Error adding items to recommended menu:", error);
+      return "Failed to add items to recommended menu.";
+    }
   }
 }
