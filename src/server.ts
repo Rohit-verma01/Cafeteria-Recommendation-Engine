@@ -5,6 +5,7 @@ import { getFunctionsByRole } from "./utils/serverUtils";
 import { AdminController } from "./controllers/adminController";
 import { ChefController } from "./controllers/chefController";
 import { EmployeeController } from "./controllers/employeeController";
+import { VoteRepository } from "./repositories/voteRepository";
 
 class Server {
   private httpServer: HTTPServer;
@@ -26,15 +27,16 @@ class Server {
       socket.on("disconnect", this.handleDisconnect);
       socket.on("executeFunction", this.executeFunction(socket));
       socket.on("showRollOutMenu", this.sendRollOutMenu(socket));
+      socket.on("isUserVoted", this.checkUserVoted(socket));
     });
   }
 
   private handleAuthenticateUser = (socket: Socket) => async (id: number) => {
     const userController = new UserController();
-    const user:any = await userController.fetchUser(id);
+    const user: any = await userController.fetchUser(id);
 
     if (user) {
-      const role:any = await userController.fetchRole(user.role_id);
+      const role: any = await userController.fetchRole(user.role_id);
       socket.emit("userFound", "Login Successfully");
       socket.emit(
         "userFound",
@@ -69,6 +71,12 @@ class Server {
     socket.emit("sendMenu", result);
   };
 
+  private checkUserVoted = (socket: Socket) => async (employeeId:number) => {
+    const voteRepository = new VoteRepository();
+    const result = await voteRepository.countUserVote(employeeId);
+    socket.emit("checkUserVoted",result);
+  };
+
   private sendRollOutMenu = (socket: Socket) => async () => {
     const employeeController = new EmployeeController();
     const result = await employeeController.executeFunctionality(5, "", "");
@@ -96,7 +104,7 @@ class Server {
             payload,
             user
           );
-          socket.emit("message",result)
+          socket.emit("message", result);
       }
       this.sendAvailableFunctions(socket, roleName, user);
     };

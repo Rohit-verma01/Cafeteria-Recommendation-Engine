@@ -15,18 +15,27 @@ export const showAvailableFunctions = (functions: string[]) => {
   });
 };
 
-export const voteForItems = async (socket: Socket) => {
-  let menu = {};
+export const voteForItems = async (socket: Socket, employeeId: number) => {
+  let menu = {},message = "";
   await new Promise<void>((resolve) => {
-    socket.emit("showRollOutMenu");
-    socket.on("sendRecommendedMenu", async (response) => {
-      console.log("here", response);
-      menu = response.data;
-      console.table(response.data);
+    socket.emit("isUserVoted", employeeId);
+    socket.on("checkUserVoted", async (response) => {
+      message = response;
       resolve();
     });
   });
-  return await promptForVote(menu);
+  message&&console.log(message);
+  if (message == "") {
+    await new Promise<void>((resolve) => {
+      socket.emit("showRollOutMenu");
+      socket.on("sendRecommendedMenu", async (response) => {
+        menu = response.data;
+        console.table(response.data);
+        resolve();
+      });
+    });
+    return await promptForVote(menu);
+  }
 };
 
 export const giveFeedback = async (socket: Socket) => {
@@ -57,7 +66,8 @@ export const handleUserSelection = async (
   roleName: string,
   selectedIndex: number,
   socket: Socket,
-  functions: any
+  functions: any,
+  employeeId: number
 ) => {
   switch (roleName) {
     case "admin":
@@ -65,7 +75,7 @@ export const handleUserSelection = async (
     case "chef":
       return await handleChefInput(selectedIndex, socket, functions);
     case "employee":
-      return await handleEmployeeInput(selectedIndex, socket);
+      return await handleEmployeeInput(selectedIndex, socket, employeeId);
   }
 };
 
@@ -101,7 +111,8 @@ export const handleChefInput = async (
 
 export const handleEmployeeInput = async (
   selectedIndex: number,
-  socket: Socket
+  socket: Socket,
+  employeeId: number
 ) => {
   switch (selectedIndex) {
     case 1:
@@ -112,7 +123,7 @@ export const handleEmployeeInput = async (
     case 3:
       return await giveFeedback(socket);
     case 4:
-      return await voteForItems(socket);
+      return await voteForItems(socket, employeeId);
   }
 };
 
@@ -138,31 +149,32 @@ export const validateVotedId = (
   itemWithMealType: any,
   votedFoodItemId: any
 ): boolean => {
-  let flag = true;
+
   const isItemsPresent = votedFoodItemId.every((itemId: number) =>
     itemWithMealType.some((item: any) => item.item_id === itemId)
   );
+  if (!isItemsPresent) {
+    console.log("Please vote from the given menu only\n");
+    return false;
+  }
 
   const isItemsUnique =
     votedFoodItemId.length === new Set(votedFoodItemId).size;
+  if (!isItemsUnique) {
+    console.log("Please vote for different items only\n");
+    return false;
+  }
 
   const isItemBelongToDifferentMeal = checkItemsBelongToDifferentMeal(
     itemWithMealType,
     votedFoodItemId
   );
-  if (!isItemsUnique) {
-    console.log("Please vote for different items only\n");
-    flag = false;
-  }
-  if (!isItemsPresent) {
-    console.log("Please vote from the given menu only\n");
-    flag = false;
-  }
   if (!isItemBelongToDifferentMeal) {
     console.log("Please vote only for one Item from one meal type\n");
-    flag = false;
+    return false;
   }
-  return flag;
+
+  return true;
 };
 
 export const checkItemsBelongToDifferentMeal = (

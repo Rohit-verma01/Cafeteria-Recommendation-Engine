@@ -63,7 +63,7 @@ class Client {
     const index = await promptFunctionSelection(functions,roleName)
 
     if(index!=undefined){
-      const payload = await handleUserSelection(roleName,index,this.socket,functions)
+      const payload = await handleUserSelection(roleName,index,this.socket,functions,user.employee_id)
       this.socket.emit("executeFunction",{index,payload,roleName,user})
     }
    

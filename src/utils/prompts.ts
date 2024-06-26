@@ -138,7 +138,7 @@ export const promptForFeedback = async () => {
   const rating = parseInt(
     await promptInput(`Enter rating for item ID ${itemId}: `)
   );
-  const comment = await promptInput(`Enter comment for ${itemId}: `);
+  const comment = await promptInput(`Enter comment for item ID ${itemId}: `);
   console.log({ itemId, rating, comment });
   return { itemId, rating, comment };
 };

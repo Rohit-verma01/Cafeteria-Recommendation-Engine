@@ -15,7 +15,7 @@ export class FeedbackRepository {
       return "Feedback submitted successfully";
     } catch (error: any) {
       if (error.sqlState === "45000") {
-        return `Already given feedback for item ${feedback.itemId} today.`;
+        return `Already given feedback for item ${feedback.itemId} today.\n`;
       } else {
         return "An error occurred while submitting feedback.";
       }
