@@ -1,7 +1,19 @@
 import { pool } from "../config/db_connection";
 import { RowDataPacket } from "mysql2";
-import { GET_ALL_MENU_ITEMS } from "../queries/queries";
-import { INSERT_FOODITEM, UPDATE_AVAILABILITY, UPDATE_PRICE, UPDATE_PRICE_AND_AVAILABILITY } from "../queries/queries";
+import {
+  DROP_TOP_VOTE,
+  DROP_VOTE_COUNT,
+  GET_ALL_MENU_ITEMS,
+  INSERT_FINAL_MENU,
+  TOP_VOTE,
+  VOTE_COUNT,
+} from "../queries/queries";
+import {
+  INSERT_FOODITEM,
+  UPDATE_AVAILABILITY,
+  UPDATE_PRICE,
+  UPDATE_PRICE_AND_AVAILABILITY,
+} from "../queries/queries";
 
 export class MenuItemRepository {
   async getAllMenuItems() {
@@ -62,6 +74,20 @@ export class MenuItemRepository {
     } catch (error) {
       console.error(`Error updating menu item "${foodName}":`, error);
       return `Failed to update menu item "${foodName}".\n`;
+    }
+  }
+
+  async finalizeTheMenu() {
+    try {
+      await pool.query(VOTE_COUNT);
+      await pool.query(TOP_VOTE);
+      await pool.query(INSERT_FINAL_MENU);
+      await pool.query(DROP_VOTE_COUNT);
+      await pool.query(DROP_TOP_VOTE);
+      return "Menu finalized successfully\n";
+    } catch (error) {
+      console.error("Error finalizing the menu:", error);
+      return "Failed to finalize the menu.\n";
     }
   }
 }

@@ -101,7 +101,7 @@ export const handleChefInput = async (
     case 1:
       return await rollOutItems(socket, functions);
     case 2:
-      return await promptForUpdateFoodItem();
+      return "";
     case 3:
       return "";
     case 4:

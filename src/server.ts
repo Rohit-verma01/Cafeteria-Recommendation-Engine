@@ -92,11 +92,14 @@ class Server {
           const adminController = new AdminController();
           result = await adminController.executeFunctionality(index, payload);
           socket.emit("message", result);
+          break;
 
         case "chef":
           const chefController = new ChefController();
           result = await chefController.executeFunctionality(index, payload);
           socket.emit("message", result);
+          break;
+
         case "employee":
           const employeeController = new EmployeeController();
           result = await employeeController.executeFunctionality(
@@ -105,6 +108,7 @@ class Server {
             user
           );
           socket.emit("message", result);
+          break;
       }
       this.sendAvailableFunctions(socket, roleName, user);
     };

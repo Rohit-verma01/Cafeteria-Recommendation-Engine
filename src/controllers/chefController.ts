@@ -23,12 +23,18 @@ export class ChefController {
         console.log("Chef is viewing feedback");
     };
 
+    sendFinalMenu = async() => {
+      console.log("Chef is sending the final menu");
+      const data = await this.menuItemService.addItemInFinalMenu();
+      return {data,type:"message"}
+    }
+
     async executeFunctionality(index: number, payload: any) {
         switch (index) {
           case 1:
             return this.rollOutItems(payload);
           case 2:
-            // return this.updateMenuItem(payload);
+            return  this.sendFinalMenu()
           case 3:
             return this.viewMenu();
           case 4:

@@ -57,4 +57,13 @@ export class MenuItemService {
       return "Failed to add item to recommended menu.";
     }
   }
+
+  async addItemInFinalMenu(){
+    try {
+      return await this.menuItemRepository.finalizeTheMenu();
+    } catch (error) {
+      console.error("Error in service while finalizing the menu:", error);
+      return `Failed to finalize the menu.`;
+    }
+  }
 }
