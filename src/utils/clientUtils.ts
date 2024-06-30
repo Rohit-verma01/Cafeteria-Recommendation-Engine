@@ -54,7 +54,6 @@ export const rollOutItems = async (socket: Socket, functions: any) => {
   await new Promise<void>((resolve) => {
     socket.emit("showMenu");
     socket.on("sendMenu", async (response) => {
-      console.log("here", response);
       console.table(response.data, ["itemId", "item", "price", "category"]);
       resolve();
     });

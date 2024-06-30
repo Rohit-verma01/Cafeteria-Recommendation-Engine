@@ -1,0 +1,78 @@
+import { RowDataPacket } from "mysql2";
+import { pool } from "../config/db_connection";
+import { FeedbackRepository } from "../repositories/feedbackRepository";
+import { NotificationRepository } from "../repositories/notificationRepository";
+
+export class NotificationService {
+  private notificationRepository: NotificationRepository;
+
+  constructor() {
+    this.notificationRepository = new NotificationRepository();
+  }
+
+  async sendRollOutNotification(item: any, roleId: number) {
+    try {
+      const allItemIds = [...item.breakfast, ...item.lunch, ...item.dinner];
+      const placeholders = allItemIds.map(() => "?").join(",");
+
+      const query = `SELECT item_id, item_name FROM fooditem WHERE item_id IN (${placeholders})`;
+
+      const [rows] = await pool.query<RowDataPacket[]>(query, allItemIds);
+      const breakfastNames = rows
+        .filter((row) => item.breakfast.includes(row.item_id))
+        .map((row) => row.item_name);
+      const lunchNames = rows
+        .filter((row) => item.lunch.includes(row.item_id))
+        .map((row) => row.item_name);
+      const dinnerNames = rows
+        .filter((row) => item.dinner.includes(row.item_id))
+        .map((row) => row.item_name);
+
+      // Construct the notification message
+      const message = `The following items are rolled out: 
+                     Breakfast: ${breakfastNames.join(", ")}, 
+                     Lunch: ${lunchNames.join(", ")}, 
+                     Dinner: ${dinnerNames.join(", ")}. 
+                     You can now vote for them.`;
+      await this.notificationRepository.addNotification(message, roleId);
+    } catch (error) {
+      console.error(
+        "Unknown error in Notification Service while sending notification:",
+        error
+      );
+    }
+  }
+
+  async sendAddItemNotification(item: string, roleId: number) {
+    try {
+      const message = `${item} is newly added in the menu`;
+      return await this.notificationRepository.addNotification(message, roleId);
+    } catch (error) {
+      console.error(
+        "Unknown error in Notification Service while sending notification:",
+        error
+      );
+      return { success: false, message: "Failed to send notification." };
+    }
+  }
+  async sendUpdateItemNotification(item: any, roleId: number) {
+    try {
+      const { foodName, foodPrice, availabilityStatus } = item;
+      let message = "";
+      if (foodPrice && availabilityStatus) {
+        message = `${foodName} price and availability status has been changed.`;
+      } else if (foodPrice) {
+        message = `${foodName} price has been changed.`;
+      } else if (availabilityStatus) {
+        message = `${foodName} availability status has been changed.`;
+      }
+      return await this.notificationRepository.addNotification(message, roleId);
+    } catch (error) {
+      console.error(
+        "Unknown error in Notification Service while sending notification:",
+        error
+      );
+      return { success: false, message: "Failed to send notification." };
+    }
+  }
+}

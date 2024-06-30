@@ -33,10 +33,10 @@ export class RecommendedMenuRepository {
 
     try {
       await pool.execute(query);
-      return "Items added in recommended menu successfully\n";
+      return {success:true,message:"Items added in recommended menu successfully\n"};
     } catch (error) {
       console.error("Error adding items to recommended menu:", error);
-      return "Failed to add items to recommended menu.\n";
+      return {success:false,message:"Failed to add items to recommended menu.\n"};
     }
   }
 }

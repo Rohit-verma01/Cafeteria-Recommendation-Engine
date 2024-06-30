@@ -1,13 +1,16 @@
 import { MenuItemRepository } from "../repositories/menuItemRepository";
+import { NotificationRepository } from "../repositories/notificationRepository";
 import { RecommendedMenuRepository } from "../repositories/recommendedMenuRepository";
 
 export class MenuItemService {
   private menuItemRepository: MenuItemRepository;
   private recommendedItemRepository: RecommendedMenuRepository;
+  private notificationRepository: NotificationRepository;
 
   constructor() {
     this.menuItemRepository = new MenuItemRepository();
     this.recommendedItemRepository = new RecommendedMenuRepository();
+    this.notificationRepository = new NotificationRepository();
   }
 
   async viewMenu() {
@@ -21,10 +24,10 @@ export class MenuItemService {
 
   async addItem(item: any) {
     try {
-      return await this.menuItemRepository.addMenuItem(item);
+      return  await this.menuItemRepository.addMenuItem(item);
     } catch (error) {
       console.error("Error in service while adding menu item:", error);
-      return "Failed to add menu item.";
+      return {success:false,message:"Failed to add menu item."};
     }
   }
 
@@ -33,7 +36,7 @@ export class MenuItemService {
       return await this.menuItemRepository.updateMenuItem(item);
     } catch (error) {
       console.error("Error in service while updating menu item:", error);
-      return "Failed to update menu item.";
+      return {success:false,message:"Failed to update menu item."};
     }
   }
 
@@ -54,7 +57,7 @@ export class MenuItemService {
         "Error in service while adding item to recommended menu:",
         error
       );
-      return "Failed to add item to recommended menu.";
+      return {success:false,message:"Failed to add item to recommended menu."};
     }
   }
 

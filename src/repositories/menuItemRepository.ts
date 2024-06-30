@@ -34,10 +34,10 @@ export class MenuItemRepository {
         price,
         categoryId,
       ]);
-      return "Item Added Successfully";
+      return {success:true,message:"Item Added Successfully"};
     } catch (error) {
       console.error("Error adding menu item:", error);
-      return "Failed to add menu item.\n";
+      return {success:false,message:"Failed to add menu item.\n"};
     }
   }
 
@@ -58,22 +58,22 @@ export class MenuItemRepository {
       if (foodPrice && availabilityStatus) {
         await pool.execute(UPDATE_PRICE_AND_AVAILABILITY, [
           foodPrice,
-          availabilityStatus,
+          availabilityStatus==="true",
           foodName,
         ]);
-        return "Item price and availability updated successfully\n";
+        return {success:true,message:"Item price and availability updated successfully\n"};
       } else if (foodPrice) {
         await pool.execute(UPDATE_PRICE, [foodPrice, foodName]);
-        return "Item price updated successfully\n";
+        return {success:true,message:"Item price updated successfully\n"};
       } else if (availabilityStatus) {
         await pool.execute(UPDATE_AVAILABILITY, [availabilityStatus, foodName]);
-        return "Item availability updated successfully\n";
+        return {success:true,message:"Item availability updated successfully\n"};
       } else {
-        return "No updates were made as no new values were provided\n";
+        return {success:false,message:"No updates were made as no new values were provided\n"};
       }
     } catch (error) {
       console.error(`Error updating menu item "${foodName}":`, error);
-      return `Failed to update menu item "${foodName}".\n`;
+      return {success:false,message:`Failed to update menu item "${foodName}".\n`};
     }
   }
 
