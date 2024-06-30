@@ -1,7 +1,6 @@
 import { pool } from "../config/db_connection";
 import { RowDataPacket } from "mysql2";
 import {
-  GET_ALL_RECOMMENDED_MENU_ITEMS,
   INSERT_VOTES,
 } from "../queries/queries";
 
@@ -38,15 +37,7 @@ export class VoteRepository {
       await pool.query(INSERT_VOTES, [values]);
       return "Votes added successfully\n";
     } catch (error: any) {
-      // if (error.sqlState === "45000"){
-
-      //   console.log("Yes I am here");
-      //   return "Already voted for today\n";
-      // }
-      // else {
-      //   console.error("Error adding votes:", error);
         return "Failed to add votes.\n";
-      // }
     }
   }
 }

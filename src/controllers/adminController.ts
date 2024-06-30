@@ -47,6 +47,7 @@ export class AdminController {
     return {data:data.message,type:"message"}
   };
 
+
   async executeFunctionality(index: number, payload: any) {
     switch (index) {
       case 1:
@@ -57,6 +58,8 @@ export class AdminController {
         return this.deleteMenuItem(payload)
       case 4:
         return this.viewMenu();
+      case 5:
+        return "logout";
       default:
         console.error("Invalid function index for admin");
     }

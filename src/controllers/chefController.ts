@@ -49,6 +49,8 @@ export class ChefController {
         return this.viewMenu();
       case 4:
         return this.viewNotification(user);
+      case 5:
+        return "logout";
       default:
         console.error("Invalid function index for admin");
     }

@@ -23,6 +23,7 @@ class Client {
     this.socket.on("disconnect", this.onServerDisconnect);
     this.socket.on("message", this.displayMessage);
     this.socket.on("Send Menu", this.showMenu);
+    this.socket.on("loggedOut", this.loggedOut);
   }
 
   private onConnect = () => {
@@ -38,6 +39,12 @@ class Client {
 
   private onUserFound = (message: string) => {
     console.log(message);
+  };
+
+  private loggedOut = () => {
+    console.log("You have been logged out")
+    this.socket.disconnect();
+    console.log("For login, again start the application");
   };
 
   private displayMessage = (response: any) => {
@@ -88,7 +95,7 @@ class Client {
   };
 
   private onServerDisconnect = () => {
-    console.log("Server Stopped");
+    console.log("Disconnected from the server");
   };
 }
 

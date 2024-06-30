@@ -71,15 +71,15 @@ class Server {
     socket.emit("sendMenu", result);
   };
 
-  private checkUserVoted = (socket: Socket) => async (employeeId:number) => {
+  private checkUserVoted = (socket: Socket) => async (employeeId: number) => {
     const voteRepository = new VoteRepository();
     const result = await voteRepository.countUserVote(employeeId);
-    socket.emit("checkUserVoted",result);
+    socket.emit("checkUserVoted", result);
   };
 
   private sendRollOutMenu = (socket: Socket) => async () => {
     const employeeController = new EmployeeController();
-    const result = await employeeController.executeFunctionality(5, "", "");
+    const result = await employeeController.executeFunctionality(6, "", "");
     socket.emit("sendRecommendedMenu", result);
   };
 
@@ -91,12 +91,23 @@ class Server {
         case "admin":
           const adminController = new AdminController();
           result = await adminController.executeFunctionality(index, payload);
-          socket.emit("message", result);
+          if (result === "logout") {
+            console.log(`User with ID ${user.employee_id} logging out`);
+            socket.emit("loggedOut");
+          } else socket.emit("message", result);
           break;
 
         case "chef":
           const chefController = new ChefController();
-          result = await chefController.executeFunctionality(index, payload,user);
+          result = await chefController.executeFunctionality(
+            index,
+            payload,
+            user
+          );
+          if (result === "logout") {
+            console.log(`User with ID ${user.employee_id} logging out`);
+            socket.emit("loggedOut");
+          } else socket.emit("message", result);
           socket.emit("message", result);
           break;
 
@@ -107,6 +118,10 @@ class Server {
             payload,
             user
           );
+          if (result === "logout") {
+            console.log(`User with ID ${user.employee_id} logging out`);
+            socket.emit("loggedOut");
+          } else socket.emit("message", result);
           socket.emit("message", result);
           break;
       }

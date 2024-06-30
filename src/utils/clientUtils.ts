@@ -88,6 +88,8 @@ export const handleAdminInput = async (selectedIndex: number) => {
       return await promptForDeleteItem();
     case 4:
       return "";
+    case 5:
+      return "";
   }
 };
 
