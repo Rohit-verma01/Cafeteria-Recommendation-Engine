@@ -45,7 +45,7 @@ export class MenuItemService {
       return await this.menuItemRepository.deleteMenuItem(name);
     } catch (error) {
       console.error("Error in service while deleting menu item:", error);
-      return `Failed to delete menu item "${name}".`;
+      return {success:false,message:`Failed to delete menu item "${name}".`};
     }
   }
 

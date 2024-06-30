@@ -45,10 +45,10 @@ export class MenuItemRepository {
     const query = "DELETE FROM fooditem WHERE item_name = ?";
     try {
       await pool.execute(query, [name]);
-      return `${name} item deleted`;
+      return {success:true,message:`${name} item deleted`};
     } catch (error) {
       console.error(`Error deleting menu item "${name}":`, error);
-      return `Failed to delete menu item "${name}".\n`;
+      return {success:true,message:`Failed to delete menu item "${name}".\n`};
     }
   }
 

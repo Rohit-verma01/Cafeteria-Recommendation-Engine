@@ -55,6 +55,18 @@ export class NotificationService {
       return { success: false, message: "Failed to send notification." };
     }
   }
+  async sendDeleteItemNotification(item: string, roleId: number) {
+    try {
+      const message = `${item} is deleted from the menu`;
+      return await this.notificationRepository.addNotification(message, roleId);
+    } catch (error) {
+      console.error(
+        "Unknown error in Notification Service while sending notification:",
+        error
+      );
+      return { success: false, message: "Failed to send notification." };
+    }
+  }
   async sendUpdateItemNotification(item: any, roleId: number) {
     try {
       const { foodName, foodPrice, availabilityStatus } = item;

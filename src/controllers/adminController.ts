@@ -29,7 +29,11 @@ export class AdminController {
   deleteMenuItem = async(payload:any) => {
     console.log("Admin is deleting a menu item");
     const data = await this.menuItemService.deleteItem(payload);
-    return {data,type:"message"}
+    if(data.success){
+      await this.notificationService.sendDeleteItemNotification(payload,2);
+      await this.notificationService.sendDeleteItemNotification(payload,3);
+    }
+    return {data:data.message,type:"message"}
   };
 
   updateMenuItem = async (payload: any) => {
