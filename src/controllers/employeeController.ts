@@ -3,24 +3,28 @@ import { RecommendedMenuRepository } from "../repositories/recommendedMenuReposi
 import { VoteRepository } from "../repositories/voteRepository";
 import { FeedbackService } from "../services/feedbackService";
 import { MenuItemService } from "../services/menuItemService";
+import { NotificationService } from "../services/notificationService";
 
 export class EmployeeController {
   private menuItemService: MenuItemService;
   private feedbackService: FeedbackService;
   private recommededRepository: RecommendedMenuRepository;
   private voteRepository: VoteRepository;
+  private notificationService: NotificationService;
 
   constructor() {
     this.menuItemService = new MenuItemService();
     this.recommededRepository = new RecommendedMenuRepository();
     this.feedbackService = new FeedbackService()
     this.voteRepository = new VoteRepository();
+    this.notificationService = new NotificationService();
   }
 
   viewRollOutMenu = async() => {
     const data = await this.recommededRepository.viewRecommededItems();
     return {data,type:"recommendedItem"}
   };
+
   viewMenu = async () => {
     console.log("Employee is viewing the menu\n");
     const data = await this.menuItemService.viewMenu();
@@ -49,12 +53,18 @@ export class EmployeeController {
     }
   }
 
+  viewNotification = async(user:any) => {
+      console.log("Employee is viewing notifications\n")
+      const data = await this.notificationService.viewNotification(user)
+      return {data,type:"notification"};
+  }
+
   async executeFunctionality(index: number, payload: any,user:any) {
     switch (index) {
       case 1:
         return this.viewMenu();
       case 2:
-      // return this.updateMenuItem(payload);
+        return this.viewNotification(user);
       case 3:
         return this.giveFeedback(payload,user);
       case 4:

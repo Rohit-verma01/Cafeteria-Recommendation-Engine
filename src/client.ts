@@ -1,6 +1,9 @@
 import { io, Socket } from "socket.io-client";
 import { promptInput, promptFunctionSelection } from "./utils/prompts";
-import { handleUserSelection, showAvailableFunctions } from "./utils/clientUtils";
+import {
+  handleUserSelection,
+  showAvailableFunctions,
+} from "./utils/clientUtils";
 import { IUser } from "./types";
 
 class Client {
@@ -17,9 +20,9 @@ class Client {
     this.socket.on("availableFunctions", this.onAvailableFunctions);
     this.socket.on("error", this.onError);
     this.socket.on("userNotFound", this.onUserNotFound);
-    this.socket.on("disconnect",this.onServerDisconnect);
-    this.socket.on("message",this.displayMessage);
-    this.socket.on("Send Menu",this.showMenu)
+    this.socket.on("disconnect", this.onServerDisconnect);
+    this.socket.on("message", this.displayMessage);
+    this.socket.on("Send Menu", this.showMenu);
   }
 
   private onConnect = () => {
@@ -29,44 +32,51 @@ class Client {
     });
   };
 
-  private showMenu = (data:any) => {
-    console.log(data)
-  }
+  private showMenu = (data: any) => {
+    console.log(data);
+  };
 
   private onUserFound = (message: string) => {
     console.log(message);
   };
 
-  private displayMessage = (response:any) => {
-      if(response){
-
-        const {data,type} = response
-        if(type==="message")
-          console.log(data)
-        else if(type==="foodItem")
-          console.table(data,['itemId','item', 'price', 'category'])
-        else
-          console.log(data)
-      }
+  private displayMessage = (response: any) => {
+    if (response) {
+      const { data, type } = response;
+      if (type === "message") console.log(data);
+      else if (type === "foodItem")
+        console.table(data, ["itemId", "item", "price", "category"]);
+      else if (type === "notification")
+        if (data.length > 0)
+          data.forEach((notification: string) => console.log(notification));
+        else console.log("There is no new notification for you");
+      else console.log(data);
+    }
+    console.log("\n");
   };
 
   private onAvailableFunctions = async ({
     functions,
     roleName,
-    user
+    user,
   }: {
     functions: string[];
     roleName: string;
-    user:IUser
+    user: IUser;
   }) => {
     showAvailableFunctions(functions);
-    const index = await promptFunctionSelection(functions,roleName)
+    const index = await promptFunctionSelection(functions, roleName);
 
-    if(index!=undefined){
-      const payload = await handleUserSelection(roleName,index,this.socket,functions,user.employee_id)
-      this.socket.emit("executeFunction",{index,payload,roleName,user})
+    if (index != undefined) {
+      const payload = await handleUserSelection(
+        roleName,
+        index,
+        this.socket,
+        functions,
+        user.employee_id
+      );
+      this.socket.emit("executeFunction", { index, payload, roleName, user });
     }
-   
   };
 
   private onError = (error: string) => {
@@ -77,9 +87,9 @@ class Client {
     console.error(message);
   };
 
-  private onServerDisconnect = ()=>{
-    console.log("Server Stopped")
-  }
+  private onServerDisconnect = () => {
+    console.log("Server Stopped");
+  };
 }
 
 // Instantiate the Client

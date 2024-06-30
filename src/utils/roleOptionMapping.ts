@@ -1,9 +1,9 @@
 export const employeeOptionMapping=[
-    'View Menu', 'View Feedback', 'Give Feedback','Vote for Recommended Menu'
+    'View Menu', 'View Notification', 'Give Feedback','Vote for Recommended Menu'
 ]
 
 export const chefOptionMapping=[
-    'Roll Out Items', 'Send Final Menu','View Menu'
+    'Roll Out Items', 'Send Final Menu','View Menu','View Notifcation'
 ]
 
 export const adminOptionMapping=[

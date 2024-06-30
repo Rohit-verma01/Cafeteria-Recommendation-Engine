@@ -34,7 +34,7 @@ export class NotificationService {
                      Lunch: ${lunchNames.join(", ")}, 
                      Dinner: ${dinnerNames.join(", ")}. 
                      You can now vote for them.`;
-      await this.notificationRepository.addNotification(message, roleId);
+      await this.notificationRepository.addNotification(message, roleId,"rollout_menu");
     } catch (error) {
       console.error(
         "Unknown error in Notification Service while sending notification:",
@@ -46,7 +46,7 @@ export class NotificationService {
   async sendAddItemNotification(item: string, roleId: number) {
     try {
       const message = `${item} is newly added in the menu`;
-      return await this.notificationRepository.addNotification(message, roleId);
+      return await this.notificationRepository.addNotification(message, roleId,'item_change');
     } catch (error) {
       console.error(
         "Unknown error in Notification Service while sending notification:",
@@ -55,10 +55,11 @@ export class NotificationService {
       return { success: false, message: "Failed to send notification." };
     }
   }
+
   async sendDeleteItemNotification(item: string, roleId: number) {
     try {
       const message = `${item} is deleted from the menu`;
-      return await this.notificationRepository.addNotification(message, roleId);
+      return await this.notificationRepository.addNotification(message, roleId,'item_change');
     } catch (error) {
       console.error(
         "Unknown error in Notification Service while sending notification:",
@@ -67,6 +68,7 @@ export class NotificationService {
       return { success: false, message: "Failed to send notification." };
     }
   }
+
   async sendUpdateItemNotification(item: any, roleId: number) {
     try {
       const { foodName, foodPrice, availabilityStatus } = item;
@@ -78,13 +80,25 @@ export class NotificationService {
       } else if (availabilityStatus) {
         message = `${foodName} availability status has been changed.`;
       }
-      return await this.notificationRepository.addNotification(message, roleId);
+      return await this.notificationRepository.addNotification(message, roleId,'item_change');
     } catch (error) {
       console.error(
         "Unknown error in Notification Service while sending notification:",
         error
       );
       return { success: false, message: "Failed to send notification." };
+    }
+  }
+
+  async viewNotification(user:any) {
+    try {
+      return await this.notificationRepository.getNotification(user);
+    } catch (error) {
+      console.error(
+        "Unknown error in Notification Service while sending notification:",
+        error
+      );
+      return  "Failed to send notification." ;
     }
   }
 }

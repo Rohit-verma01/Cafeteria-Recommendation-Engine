@@ -96,7 +96,7 @@ class Server {
 
         case "chef":
           const chefController = new ChefController();
-          result = await chefController.executeFunctionality(index, payload);
+          result = await chefController.executeFunctionality(index, payload,user);
           socket.emit("message", result);
           break;
 

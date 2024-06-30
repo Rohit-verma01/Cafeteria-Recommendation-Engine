@@ -27,8 +27,10 @@ export class ChefController {
     return { data, type: "foodItem" };
   };
 
-  viewFeedback = () => {
-    console.log("Chef is viewing feedback");
+  viewNotification = async(user:any) => {
+    console.log("Chef is viewing notification");
+    const data = await this.notificationService.viewNotification(user)
+    return {data,type:"notification"};
   };
 
   sendFinalMenu = async () => {
@@ -37,7 +39,7 @@ export class ChefController {
     return { data, type: "message" };
   };
 
-  async executeFunctionality(index: number, payload: any) {
+  async executeFunctionality(index: number, payload: any,user:any) {
     switch (index) {
       case 1:
         return this.rollOutItems(payload);
@@ -46,7 +48,7 @@ export class ChefController {
       case 3:
         return this.viewMenu();
       case 4:
-        return this.viewMenu();
+        return this.viewNotification(user);
       default:
         console.error("Invalid function index for admin");
     }
