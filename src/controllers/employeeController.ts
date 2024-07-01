@@ -4,6 +4,7 @@ import { VoteRepository } from "../repositories/voteRepository";
 import { FeedbackService } from "../services/feedbackService";
 import { MenuItemService } from "../services/menuItemService";
 import { NotificationService } from "../services/notificationService";
+import { RecommendationService } from "../services/recommendationService";
 
 export class EmployeeController {
   private menuItemService: MenuItemService;
@@ -11,6 +12,7 @@ export class EmployeeController {
   private recommededRepository: RecommendedMenuRepository;
   private voteRepository: VoteRepository;
   private notificationService: NotificationService;
+  private recommendationService: RecommendationService;
 
   constructor() {
     this.menuItemService = new MenuItemService();
@@ -18,6 +20,7 @@ export class EmployeeController {
     this.feedbackService = new FeedbackService();
     this.voteRepository = new VoteRepository();
     this.notificationService = new NotificationService();
+    this.recommendationService= new RecommendationService();
   }
 
   viewRollOutMenu = async () => {

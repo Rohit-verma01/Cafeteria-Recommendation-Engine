@@ -69,4 +69,22 @@ export class MenuItemService {
       return `Failed to finalize the menu.`;
     }
   }
+
+  async addItemSentimentScore(score:number,foodItem:any){
+    try {
+      return await this.menuItemRepository.addSentimentScore(score,foodItem.itemId);
+    } catch (error) {
+      console.error("Error in adding sentiment Score:", error);
+      return `Failed to add score.`;
+    }
+  }
+
+  async viewRecommendationMenu(){
+    try {
+      return await this.menuItemRepository.getMenuWithRecommendation();
+    } catch (error) {
+      console.error("Error in getting Recommendation", error);
+      return `Failed to view recommendation.`;
+    }
+  }
 }

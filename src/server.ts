@@ -65,9 +65,9 @@ class Server {
     console.log("user disconnected");
   };
 
-  private sendMenu = (socket: Socket) => async () => {
+  private sendMenu = (socket: Socket) => async (noOfItem:number) => {
     const adminController = new AdminController();
-    const result = await adminController.executeFunctionality(4, "");
+    const result = await adminController.executeFunctionality(6, noOfItem);
     socket.emit("sendMenu", result);
   };
 

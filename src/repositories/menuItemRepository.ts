@@ -34,10 +34,10 @@ export class MenuItemRepository {
         price,
         categoryId,
       ]);
-      return {success:true,message:"Item Added Successfully"};
+      return { success: true, message: "Item Added Successfully" };
     } catch (error) {
       console.error("Error adding menu item:", error);
-      return {success:false,message:"Failed to add menu item.\n"};
+      return { success: false, message: "Failed to add menu item.\n" };
     }
   }
 
@@ -45,10 +45,13 @@ export class MenuItemRepository {
     const query = "DELETE FROM fooditem WHERE item_name = ?";
     try {
       await pool.execute(query, [name]);
-      return {success:true,message:`${name} item deleted`};
+      return { success: true, message: `${name} item deleted` };
     } catch (error) {
       console.error(`Error deleting menu item "${name}":`, error);
-      return {success:true,message:`Failed to delete menu item "${name}".\n`};
+      return {
+        success: true,
+        message: `Failed to delete menu item "${name}".\n`,
+      };
     }
   }
 
@@ -58,22 +61,37 @@ export class MenuItemRepository {
       if (foodPrice && availabilityStatus) {
         await pool.execute(UPDATE_PRICE_AND_AVAILABILITY, [
           foodPrice,
-          availabilityStatus==="true",
+          availabilityStatus === "true",
           foodName,
         ]);
-        return {success:true,message:"Item price and availability updated successfully\n"};
+        return {
+          success: true,
+          message: "Item price and availability updated successfully\n",
+        };
       } else if (foodPrice) {
         await pool.execute(UPDATE_PRICE, [foodPrice, foodName]);
-        return {success:true,message:"Item price updated successfully\n"};
+        return { success: true, message: "Item price updated successfully\n" };
       } else if (availabilityStatus) {
-        await pool.execute(UPDATE_AVAILABILITY, [availabilityStatus==="true", foodName]);
-        return {success:true,message:"Item availability updated successfully\n"};
+        await pool.execute(UPDATE_AVAILABILITY, [
+          availabilityStatus === "true",
+          foodName,
+        ]);
+        return {
+          success: true,
+          message: "Item availability updated successfully\n",
+        };
       } else {
-        return {success:false,message:"No updates were made as no new values were provided\n"};
+        return {
+          success: false,
+          message: "No updates were made as no new values were provided\n",
+        };
       }
     } catch (error) {
       console.error(`Error updating menu item "${foodName}":`, error);
-      return {success:false,message:`Failed to update menu item "${foodName}".\n`};
+      return {
+        success: false,
+        message: `Failed to update menu item "${foodName}".\n`,
+      };
     }
   }
 
@@ -88,6 +106,47 @@ export class MenuItemRepository {
     } catch (error) {
       console.error("Error finalizing the menu:", error);
       return "Failed to finalize the menu.\n";
+    }
+  }
+
+  async addSentimentScore(score: number, itemId: number) {
+    try {
+      const query = `UPDATE fooditem SET sentiment_score = ? WHERE item_id = ?`;
+      const values = [score, itemId];
+      await pool.query(query, values);
+
+      return "Score added successfully\n";
+    } catch (error) {
+      console.error("Error in adding the score:", error);
+      return "Failed to adding the score.\n";
+    }
+  }
+
+  async getMenuWithRecommendation() {
+    try {
+      const query = `
+      SELECT 
+        f.item_id AS itemId, 
+        f.item_name AS item, 
+        f.item_price AS price, 
+        c.category_name AS category 
+      FROM 
+        fooditem f 
+      JOIN 
+        category c ON f.category_id = c.category_id 
+      WHERE 
+        f.is_available = 1
+      ORDER BY 
+        c.category_name, 
+        f.sentiment_score DESC;
+    `;
+
+    const [rows] = await pool.query<RowDataPacket[]>(query);
+    return rows;
+
+    } catch (error) {
+      console.error("Error in getting the recommendation:", error);
+      return "Failed to view the recommendation.\n";
     }
   }
 }

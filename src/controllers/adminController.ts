@@ -44,6 +44,11 @@ export class AdminController {
     return {data:data.message,type:"message"}
   };
 
+  viewRecommendation = async () => {
+   const data = await this.menuItemService.viewRecommendationMenu();
+   return {data,type:"foodItem"}
+  };
+
 
   async executeFunctionality(index: number, payload: any) {
     switch (index) {
@@ -57,6 +62,8 @@ export class AdminController {
         return this.viewMenu();
       case 5:
         return "logout";
+      case 6:
+        return this.viewRecommendation();
       default:
         console.error("Invalid function index for admin");
     }

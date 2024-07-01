@@ -12,13 +12,28 @@ export class FeedbackRepository {
 
     try {
       await pool.query(INSERT_FEEDBACK, values);
-      return "Feedback submitted successfully";
+      return {success:true,message:"Feedback submitted successfully"};
     } catch (error: any) {
       if (error.sqlState === "45000") {
-        return `Already given feedback for item ${feedback.itemId} today.\n`;
+        return {success:false,message:`Already given feedback for item ${feedback.itemId} today.\n`};
       } else {
-        return "An error occurred while submitting feedback.";
+        return {success:false,message:"An error occurred while submitting feedback."};
       }
+    }
+  }
+
+  async getFeedbackByItemId(itemId:number) {
+  
+    try {
+      const [comments] = await pool.query(`
+        SELECT comment
+        FROM feedback
+        WHERE item_id = ?
+      `, [itemId]);
+      console.log(comments,"commnets")
+      return comments
+    } catch (error: any) {
+      // return {success:true,message:"Unable to get feedbacks"}
     }
   }
 }
