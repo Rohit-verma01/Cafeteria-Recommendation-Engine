@@ -11,7 +11,6 @@ export class AdminController {
   }
 
   viewMenu = async () => {
-    console.log("Admin is viewing the menu");
     const data = await this.menuItemService.viewMenu();
     return {data,type:"foodItem"}
   };
@@ -27,7 +26,6 @@ export class AdminController {
   };
 
   deleteMenuItem = async(payload:any) => {
-    console.log("Admin is deleting a menu item");
     const data = await this.menuItemService.deleteItem(payload);
     if(data.success){
       await this.notificationService.sendDeleteItemNotification(payload,2);
@@ -37,7 +35,6 @@ export class AdminController {
   };
 
   updateMenuItem = async (payload: any) => {
-    console.log("Admin is updating a menu item");
     const data = await this.menuItemService.updateItem(payload);
     if(data.success){
       await this.notificationService.sendUpdateItemNotification(payload,2);

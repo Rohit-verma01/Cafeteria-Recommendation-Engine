@@ -19,7 +19,7 @@ export const promptInput = (query: string): Promise<string> =>
 export const promptFunctionSelection = async (
   functions: string[],
   roleName: string
-) => {
+):Promise<any> => {
   const selection = await promptInput("Select a function number: ");
   const selectedIndex = parseInt(selection);
 
@@ -31,7 +31,7 @@ export const promptFunctionSelection = async (
     return selectedIndex;
   } else {
     console.error("Invalid function number");
-    promptFunctionSelection(functions, roleName);
+    return promptFunctionSelection(functions, roleName);
   }
 };
 
@@ -65,7 +65,6 @@ export const promptForUpdateFoodItem = async () => {
     availabilityStatus = await promptInput(
       "Change availability status to true or false: "
     );
-  console.log(foodName, parseInt(foodPrice), availabilityStatus);
   return { foodName, foodPrice: parseInt(foodPrice), availabilityStatus };
 };
 
@@ -135,10 +134,10 @@ export const promptForFeedback = async () => {
   const itemId = parseInt(
     await promptInput("Enter Item ID to give feedback for: ")
   );
-  const rating = parseInt(
+  const rating = parseFloat(
     await promptInput(`Enter rating for item ID ${itemId}: `)
   );
   const comment = await promptInput(`Enter comment for item ID ${itemId}: `);
-  console.log({ itemId, rating, comment });
+  console.log("item rating = ",rating)
   return { itemId, rating, comment };
 };

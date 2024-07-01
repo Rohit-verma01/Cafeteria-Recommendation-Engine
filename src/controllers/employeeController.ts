@@ -26,17 +26,14 @@ export class EmployeeController {
   };
 
   viewMenu = async () => {
-    console.log("Employee is viewing the menu\n");
     const data = await this.menuItemService.viewMenu();
     return { data, type: "foodItem" };
   };
 
   viewFeedback = () => {
-    console.log("Employee is viewing feedback\n");
   };
 
   giveFeedback = async (payload: any, user: any) => {
-    console.log("Employee is giving feedback\n");
     try {
       const data = await this.feedbackService.sendFeedback(payload, user);
       return { data, type: "message" };
@@ -47,14 +44,12 @@ export class EmployeeController {
 
   sendVotes = async (payload: any, user: any) => {
     if (payload) {
-      console.log("Employee is giving votes\n");
       const data = await this.voteRepository.addVotes(payload, user);
       return { data, type: "message" };
     }
   };
 
   viewNotification = async (user: any) => {
-    console.log("Employee is viewing notifications\n");
     const data = await this.notificationService.viewNotification(user);
     return { data, type: "notification" };
   };

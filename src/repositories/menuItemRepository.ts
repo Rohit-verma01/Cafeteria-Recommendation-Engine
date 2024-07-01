@@ -66,7 +66,7 @@ export class MenuItemRepository {
         await pool.execute(UPDATE_PRICE, [foodPrice, foodName]);
         return {success:true,message:"Item price updated successfully\n"};
       } else if (availabilityStatus) {
-        await pool.execute(UPDATE_AVAILABILITY, [availabilityStatus, foodName]);
+        await pool.execute(UPDATE_AVAILABILITY, [availabilityStatus==="true", foodName]);
         return {success:true,message:"Item availability updated successfully\n"};
       } else {
         return {success:false,message:"No updates were made as no new values were provided\n"};

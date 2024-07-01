@@ -11,7 +11,6 @@ export class ChefController {
   }
 
   rollOutItems = async (payload: any) => {
-    console.log("Chef is rolling out the item");
     const data = await this.menuItemService.addItemInRecommendedMenu(payload);
     if (data.success) {
       console.log("I am here in rollout beofre noti")
@@ -22,19 +21,16 @@ export class ChefController {
   };
 
   viewMenu = async () => {
-    console.log("Chef is viewing the menu");
     const data = await this.menuItemService.viewMenu();
     return { data, type: "foodItem" };
   };
 
   viewNotification = async(user:any) => {
-    console.log("Chef is viewing notification");
     const data = await this.notificationService.viewNotification(user)
     return {data,type:"notification"};
   };
 
   sendFinalMenu = async () => {
-    console.log("Chef is sending the final menu");
     const data = await this.menuItemService.addItemInFinalMenu();
     return { data, type: "message" };
   };

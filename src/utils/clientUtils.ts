@@ -42,7 +42,6 @@ export const giveFeedback = async (socket: Socket) => {
   await new Promise<void>((resolve) => {
     socket.emit("showMenu");
     socket.on("sendMenu", async (response) => {
-      console.log("here", response);
       console.table(response.data, ["itemId", "item", "price", "category"]);
       resolve();
     });
@@ -119,8 +118,7 @@ export const handleEmployeeInput = async (
     case 1:
       return "";
     case 2:
-      // return await promptForUpdateFoodItem();
-      break;
+      return "";
     case 3:
       return await giveFeedback(socket);
     case 4:

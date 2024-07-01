@@ -11,9 +11,10 @@ export const UPDATE_PRICE_AND_AVAILABILITY =
   "UPDATE fooditem SET item_price = ?, is_available = ? WHERE item_name = ?";
 
 export const GET_ALL_MENU_ITEMS = `SELECT f.item_id AS itemId, f.item_name AS item, f.item_price AS price, c.category_name AS category 
-   FROM fooditem f 
-   JOIN category c ON f.category_id = c.category_id 
-   ORDER BY c.category_name;`;
+  FROM fooditem f 
+  JOIN category c ON f.category_id = c.category_id 
+  WHERE f.is_available = 1
+  ORDER BY c.category_name;`;
 
 export const GET_ALL_RECOMMENDED_MENU_ITEMS = `SELECT rm.item_id, f.item_name, mt.meal_type, mt.meal_type_id, f.category_id, c.category_name 
    FROM recommendedmenu rm 
