@@ -1,6 +1,6 @@
 import { FeedbackRepository } from "../repositories/feedbackRepository";
 import { negativeWords, positiveWords } from "../utils/constants";
-import { getTopWords } from "../utils/serverUtils";
+import { getTopWords } from "../server/serverUtils";
 
 export class RecommendationService {
   private feedbackRepository: FeedbackRepository;

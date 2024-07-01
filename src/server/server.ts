@@ -1,11 +1,11 @@
 import { createServer, Server as HTTPServer } from "http";
 import { Server as SocketIOServer, Socket } from "socket.io";
-import { UserController } from "./controllers/userController";
-import { getFunctionsByRole } from "./utils/serverUtils";
-import { AdminController } from "./controllers/adminController";
-import { ChefController } from "./controllers/chefController";
-import { EmployeeController } from "./controllers/employeeController";
-import { VoteRepository } from "./repositories/voteRepository";
+import { UserController } from "../controllers/userController";
+import { getFunctionsByRole } from "./serverUtils";
+import { AdminController } from "../controllers/adminController";
+import { ChefController } from "../controllers/chefController";
+import { EmployeeController } from "../controllers/employeeController";
+import { VoteRepository } from "../repositories/voteRepository";
 
 class Server {
   private httpServer: HTTPServer;
@@ -68,7 +68,6 @@ class Server {
   private sendMenu = (socket: Socket) => async () => {
     const adminController = new AdminController();
     const result = await adminController.executeFunctionality(6, "");
-    console.log(result,"= result")
     socket.emit("sendMenu", result);
   };
 
@@ -123,7 +122,6 @@ class Server {
             console.log(`User with ID ${user.employee_id} logging out`);
             socket.emit("loggedOut");
           } else socket.emit("message", result);
-          socket.emit("message", result);
           break;
       }
       this.sendAvailableFunctions(socket, roleName, user);

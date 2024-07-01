@@ -13,7 +13,6 @@ export class ChefController {
   rollOutItems = async (payload: any) => {
     const data = await this.menuItemService.addItemInRecommendedMenu(payload);
     if (data.success) {
-      console.log("I am here in rollout beofre noti")
       await this.notificationService.sendRollOutNotification(payload, 3);
       return {data:data.message,type:"message"};
     }

@@ -1,11 +1,9 @@
-import { Socket } from "socket.io-client";
 import { createReadlineInterface } from "./readline";
 import { categories, logObject } from "./category";
 import {
-  showAvailableFunctions,
   validateUniqueItems,
   validateVotedId,
-} from "./clientUtils";
+} from "../client/validation";
 
 const rl = createReadlineInterface();
 
@@ -138,6 +136,5 @@ export const promptForFeedback = async () => {
     await promptInput(`Enter rating for item ID ${itemId}: `)
   );
   const comment = await promptInput(`Enter comment for item ID ${itemId}: `);
-  console.log("item rating = ",rating)
   return { itemId, rating, comment };
 };

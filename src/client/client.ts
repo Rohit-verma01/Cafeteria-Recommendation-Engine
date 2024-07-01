@@ -1,10 +1,10 @@
 import { io, Socket } from "socket.io-client";
-import { promptInput, promptFunctionSelection } from "./utils/prompts";
+import { promptInput, promptFunctionSelection } from "../utils/prompts";
 import {
   handleUserSelection,
   showAvailableFunctions,
-} from "./utils/clientUtils";
-import { IUser } from "./types";
+} from "./usersHandler";
+import { IUser } from "../types";
 
 class Client {
   private socket: Socket;
