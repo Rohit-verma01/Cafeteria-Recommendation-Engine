@@ -1,11 +1,14 @@
 import { pool } from "../config/db_connection";
 import { RowDataPacket } from "mysql2";
 import {
+  DELETE_FOOD_ITEM_BY_NAME,
   DROP_TOP_VOTE,
   DROP_VOTE_COUNT,
   GET_ALL_MENU_ITEMS,
+  GET_RECOMMENDATIONS,
   INSERT_FINAL_MENU,
   TOP_VOTE,
+  UPDATE_FOOD_ITEM_SENTIMENTS_BY_ID,
   VOTE_COUNT,
 } from "../queries/queries";
 import {
@@ -42,9 +45,8 @@ export class MenuItemRepository {
   }
 
   async deleteMenuItem(name: string) {
-    const query = "DELETE FROM fooditem WHERE item_name = ?";
     try {
-      await pool.execute(query, [name]);
+      await pool.query(DELETE_FOOD_ITEM_BY_NAME, [name]);
       return { success: true, message: `${name} item deleted` };
     } catch (error) {
       console.error(`Error deleting menu item "${name}":`, error);
@@ -69,10 +71,10 @@ export class MenuItemRepository {
           message: "Item price and availability updated successfully\n",
         };
       } else if (foodPrice) {
-        await pool.execute(UPDATE_PRICE, [foodPrice, foodName]);
+        await pool.query(UPDATE_PRICE, [foodPrice, foodName]);
         return { success: true, message: "Item price updated successfully\n" };
       } else if (availabilityStatus) {
-        await pool.execute(UPDATE_AVAILABILITY, [
+        await pool.query(UPDATE_AVAILABILITY, [
           availabilityStatus === "true",
           foodName,
         ]);
@@ -109,12 +111,10 @@ export class MenuItemRepository {
     }
   }
 
-  async addSentiments(score: number,sentiment:string, itemId: number) {
+  async addSentiments(score: number, sentiment: string, itemId: number) {
     try {
-      const query = `UPDATE fooditem SET sentiment_score = ?, sentiments = ? WHERE item_id = ?`;
-    const values = [score, sentiment, itemId];
-      await pool.query(query, values);
-
+      const values = [score, sentiment, itemId];
+      await pool.query(UPDATE_FOOD_ITEM_SENTIMENTS_BY_ID, values);
       return "Sentiments added successfully\n";
     } catch (error) {
       console.error("Error in adding the sentiments:", error);
@@ -124,26 +124,8 @@ export class MenuItemRepository {
 
   async getMenuWithRecommendation() {
     try {
-      const query = `
-      SELECT 
-        f.item_id AS itemId, 
-        f.item_name AS item, 
-        f.item_price AS price, 
-        c.category_name AS category 
-      FROM 
-        fooditem f 
-      JOIN 
-        category c ON f.category_id = c.category_id 
-      WHERE 
-        f.is_available = 1
-      ORDER BY 
-        c.category_name, 
-        f.sentiment_score DESC;
-    `;
-
-    const [rows] = await pool.query<RowDataPacket[]>(query);
-    return rows;
-
+      const [rows] = await pool.query<RowDataPacket[]>(GET_RECOMMENDATIONS);
+      return rows;
     } catch (error) {
       console.error("Error in getting the recommendation:", error);
       return "Failed to view the recommendation.\n";

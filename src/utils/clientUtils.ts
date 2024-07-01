@@ -52,12 +52,11 @@ export const giveFeedback = async (socket: Socket) => {
 
 export const rollOutItems = async (socket: Socket, functions: any) => {
   await new Promise<void>(async(resolve) => {
-    const numberOfItem = parseInt(await promptInput("Enter number of item you want for recommendation in each category = "))
-    socket.emit("showMenu",numberOfItem);
+    socket.emit("showMenu");
     socket.on("sendMenu", async (response) => {
-      console.table(response.data, ["itemId", "item", "price", "category"]);
+      console.table(response.data, ["itemId", "item", "price", "category","totalScore"]);
       console.log(
-        "Above are the system generated sorted recommendation for you.\nYou can choose from above"
+        "Above are the system generated category wise sorted recommendation for you.\nYou can choose from above menu."
       );
       resolve();
     });
