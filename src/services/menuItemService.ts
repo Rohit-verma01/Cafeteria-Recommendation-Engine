@@ -70,9 +70,9 @@ export class MenuItemService {
     }
   }
 
-  async addItemSentimentScore(score:number,foodItem:any){
+  async addItemSentiments(score:number,sentiment:string,foodItem:any){
     try {
-      return await this.menuItemRepository.addSentimentScore(score,foodItem.itemId);
+      return await this.menuItemRepository.addSentiments(score,sentiment,foodItem.itemId);
     } catch (error) {
       console.error("Error in adding sentiment Score:", error);
       return `Failed to add score.`;

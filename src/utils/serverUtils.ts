@@ -15,3 +15,16 @@ export const getFunctionsByRole = (roleName: string) => {
       return null;
   }
 };
+
+export function getTopWords(words: string[], topN: number): string[] {
+  const wordCount: { [key: string]: number } = {};
+
+  words.forEach(word => {
+    wordCount[word] = (wordCount[word] || 0) + 1;
+  });
+
+  return Object.entries(wordCount)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, Math.min(topN, Object.entries(wordCount).length))
+    .map(entry => entry[0]);
+}

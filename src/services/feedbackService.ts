@@ -21,7 +21,7 @@ export class FeedbackService {
           payload
         );
         if(sentiment.success){
-          await this.menuItemSerive.addItemSentimentScore(sentiment.score!,payload)
+          await this.menuItemSerive.addItemSentiments(sentiment.score!,sentiment.summary!,payload)
         }
       }
       return result.message;

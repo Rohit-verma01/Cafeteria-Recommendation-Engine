@@ -109,16 +109,16 @@ export class MenuItemRepository {
     }
   }
 
-  async addSentimentScore(score: number, itemId: number) {
+  async addSentiments(score: number,sentiment:string, itemId: number) {
     try {
-      const query = `UPDATE fooditem SET sentiment_score = ? WHERE item_id = ?`;
-      const values = [score, itemId];
+      const query = `UPDATE fooditem SET sentiment_score = ?, sentiments = ? WHERE item_id = ?`;
+    const values = [score, sentiment, itemId];
       await pool.query(query, values);
 
-      return "Score added successfully\n";
+      return "Sentiments added successfully\n";
     } catch (error) {
-      console.error("Error in adding the score:", error);
-      return "Failed to adding the score.\n";
+      console.error("Error in adding the sentiments:", error);
+      return "Failed to adding the sentiments.\n";
     }
   }
 
