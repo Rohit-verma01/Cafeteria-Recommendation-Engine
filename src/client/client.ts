@@ -47,13 +47,14 @@ class Client {
   private displayMessage = (response: any) => {
     if (response) {
       const { data, type } = response;
-      if (type === "foodItem")
+      if (type === "message") console.log(data);
+      else if (type === "foodItem")
         console.table(data, ["itemId", "item", "price", "category"]);
       else if (type === "notification")
         if (data.length > 0)
           data.forEach((notification: string) => console.log(notification));
         else console.log("There is no new notification for you");
-      else console.log(data);
+      else console.log(response);
     }
     console.log("\n");
   };
@@ -78,8 +79,8 @@ class Client {
         functions,
         user.employee_id
       );
-      if(payload.index) index=payload.index;
-      if(payload.data) payload=payload.data
+      if (payload?.index !== undefined) index = payload.index;
+      if (payload?.data !== undefined) payload = payload.data;
       this.socket.emit("executeFunction", { index, payload, roleName, user });
     }
   };

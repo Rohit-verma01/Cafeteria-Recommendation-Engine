@@ -12,5 +12,7 @@ export const handleAdminInput = async (selectedIndex: number) => {
         return "";
       case 5:
         return "";
+      case 6:
+        return "";
     }
   };

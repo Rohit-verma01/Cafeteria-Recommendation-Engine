@@ -164,3 +164,13 @@ export const promptForFeedback = async () => {
   const comment = await promptInput(`Enter comment for item ID ${itemId}: `);
   return { itemId, rating, comment };
 };
+
+export const promptForDeatiledFeedback = async (item:{itemId:number,name:string}):Promise<any> => {
+  const {itemId,name}=item;
+  const likeResponse = await promptInput(`Q1. How would you like ${name} to taste?\nAns. `);
+  const dislikeResponse = await promptInput(`Q2. What didn’t you like about ${name}?\nAns. `);
+  const reciepeResponse = await promptInput(`Q3. Share your mom’s recipe for ${name}.\nAns. `);
+  if(likeResponse.trim().length && dislikeResponse.trim().length && reciepeResponse.trim().length)
+    return { itemId,likeResponse, dislikeResponse, reciepeResponse };
+  else return promptForDeatiledFeedback(item);
+};

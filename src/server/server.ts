@@ -6,6 +6,7 @@ import { AdminController } from "../controllers/adminController";
 import { ChefController } from "../controllers/chefController";
 import { EmployeeController } from "../controllers/employeeController";
 import { VoteRepository } from "../repositories/voteRepository";
+import { DiscardItemService } from "../services/discardItemService";
 
 class Server {
   private httpServer: HTTPServer;
@@ -28,7 +29,8 @@ class Server {
       socket.on("executeFunction", this.executeFunction(socket));
       socket.on("showRollOutMenu", this.sendRollOutMenu(socket));
       socket.on("isUserVoted", this.checkUserVoted(socket));
-      socket.on("showDiscardMenu", this.sendDiscardMenu(socket))
+      socket.on("showDiscardMenu", this.sendDiscardMenu(socket));
+      socket.on("showQuestionForFeedback", this.sendFeedbackQuestion(socket));
     });
   }
 
@@ -69,6 +71,12 @@ class Server {
     const adminController = new AdminController();
     const result = await adminController.executeFunctionality(6, "");
     socket.emit("sendMenu", result);
+  };
+
+  private sendFeedbackQuestion = (socket: Socket) => async (employeeId:number) => {
+    const discardItemService = new DiscardItemService();
+    const result = await discardItemService.getDetailedFeedbackItem(employeeId);
+    socket.emit("sendFeedbackQuestion", result);
   };
 
   private sendDiscardMenu = (socket: Socket) => async () => {
@@ -114,7 +122,6 @@ class Server {
             console.log(`User with ID ${user.employee_id} logging out`);
             socket.emit("loggedOut");
           } else socket.emit("message", result)
-          // socket.emit("message", result);
           break;
 
         case "employee":

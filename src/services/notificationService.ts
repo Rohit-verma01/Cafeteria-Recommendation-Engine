@@ -87,7 +87,6 @@ export class NotificationService {
   async sendDetailedFeedbackNotification(itemId: number, roleId: number) {
     try {
       const itemName = await this.menuItemService.getItemName(itemId);
-      console.log(itemName);
       const message = `We are trying to improve your experience with ${itemName}. Please provide your feedback by giving detailed feedback and help us.`;
       return await this.notificationRepository.addNotification(
         message,

@@ -1,5 +1,5 @@
 const employeeOptionMapping=[
-  'View Menu', 'View Notification', 'Give Feedback','Vote for Recommended Menu','Logout'
+  'View Menu', 'View Notification', 'Give Feedback','Vote for Recommended Menu','Give Detailed Feedback for Discard Item','Logout',
 ]
 
 const chefOptionMapping=[

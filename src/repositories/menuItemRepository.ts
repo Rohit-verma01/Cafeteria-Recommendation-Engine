@@ -61,7 +61,6 @@ export class MenuItemRepository {
     try {
       const query = `SELECT item_name FROM fooditem WHERE item_id = ?;`;
       const [rows] = await pool.query<RowDataPacket[any]>(query, [itemId]);
-      console.log("item = ",rows[0].item_name)
       return rows[0].item_name;
     } catch (error) {
       console.error(`Error getting menu item name:`, error);
