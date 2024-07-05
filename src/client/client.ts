@@ -1,9 +1,6 @@
 import { io, Socket } from "socket.io-client";
 import { promptInput, promptFunctionSelection } from "../utils/prompts";
-import {
-  handleUserSelection,
-  showAvailableFunctions,
-} from "./usersHandler";
+import { handleUserSelection, showAvailableFunctions } from "./usersHandler";
 import { IUser } from "../types";
 
 class Client {
@@ -42,7 +39,7 @@ class Client {
   };
 
   private loggedOut = () => {
-    console.log("You have been logged out")
+    console.log("You have been logged out");
     this.socket.disconnect();
     console.log("For login, again start the application");
   };
@@ -50,8 +47,7 @@ class Client {
   private displayMessage = (response: any) => {
     if (response) {
       const { data, type } = response;
-      if (type === "message") console.log(data);
-      else if (type === "foodItem")
+      if (type === "foodItem")
         console.table(data, ["itemId", "item", "price", "category"]);
       else if (type === "notification")
         if (data.length > 0)
@@ -72,16 +68,18 @@ class Client {
     user: IUser;
   }) => {
     showAvailableFunctions(functions);
-    const index = await promptFunctionSelection(functions, roleName);
+    let index = await promptFunctionSelection(functions, roleName);
 
     if (index != undefined) {
-      const payload = await handleUserSelection(
+      let payload = await handleUserSelection(
         roleName,
         index,
         this.socket,
         functions,
         user.employee_id
       );
+      if(payload.index) index=payload.index;
+      if(payload.data) payload=payload.data
       this.socket.emit("executeFunction", { index, payload, roleName, user });
     }
   };
@@ -99,5 +97,4 @@ class Client {
   };
 }
 
-// Instantiate the Client
 new Client();

@@ -1,16 +1,16 @@
+import { DiscardMenuRepsitory } from "../repositories/discardMenuRepository";
 import { MenuItemRepository } from "../repositories/menuItemRepository";
-import { NotificationRepository } from "../repositories/notificationRepository";
 import { RecommendedMenuRepository } from "../repositories/recommendedMenuRepository";
 
 export class MenuItemService {
   private menuItemRepository: MenuItemRepository;
   private recommendedItemRepository: RecommendedMenuRepository;
-  private notificationRepository: NotificationRepository;
+  private discardMenuRepository: DiscardMenuRepsitory;
 
   constructor() {
     this.menuItemRepository = new MenuItemRepository();
     this.recommendedItemRepository = new RecommendedMenuRepository();
-    this.notificationRepository = new NotificationRepository();
+    this.discardMenuRepository = new DiscardMenuRepsitory();
   }
 
   async viewMenu() {
@@ -48,6 +48,17 @@ export class MenuItemService {
       return {success:false,message:`Failed to delete menu item "${name}".`};
     }
   }
+
+  async getItemName(itemId: number) {
+    try {
+      return await this.menuItemRepository.getItemName(itemId);
+    } catch (error) {
+      console.error("Error in service while getting menu item name:", error);
+      return {success:false,message:`Failed to get menu item name.`};
+    }
+  }
+
+
 
   async addItemInRecommendedMenu(item: any) {
     try {
@@ -87,4 +98,5 @@ export class MenuItemService {
       return `Failed to view recommendation.`;
     }
   }
+
 }

@@ -14,9 +14,9 @@ export class NotificationRepository {
   ) {
     try {
       await pool.query(INSERT_NOTIFICATION, [message, roleId, type]);
-      return { sucess: true, message: "Notification Added" };
+      return { success: true, message: "Notification Added" };
     } catch (error) {
-      return { sucess: false, message: "Failed to add notification" };
+      return { success: false, message: "Failed to add notification" };
     }
   }
 

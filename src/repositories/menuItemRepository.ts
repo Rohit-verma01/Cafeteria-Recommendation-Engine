@@ -57,6 +57,18 @@ export class MenuItemRepository {
     }
   }
 
+  async getItemName(itemId: number) {
+    try {
+      const query = `SELECT item_name FROM fooditem WHERE item_id = ?;`;
+      const [rows] = await pool.query<RowDataPacket[any]>(query, [itemId]);
+      console.log("item = ",rows[0].item_name)
+      return rows[0].item_name;
+    } catch (error) {
+      console.error(`Error getting menu item name:`, error);
+      return "Error in getting name"
+    }
+  }
+
   async updateMenuItem(item: any): Promise<any> {
     const { foodName, foodPrice, availabilityStatus } = item;
     try {

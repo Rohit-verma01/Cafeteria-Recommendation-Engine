@@ -3,7 +3,7 @@ const employeeOptionMapping=[
 ]
 
 const chefOptionMapping=[
-  'Roll Out Items', 'Send Final Menu','View Menu','View Notifcation','Logout'
+  'Roll Out Items', 'Send Final Menu','View Menu','View Notifcation','View Discard Menu','Logout',
 ]
 
 const adminOptionMapping=[

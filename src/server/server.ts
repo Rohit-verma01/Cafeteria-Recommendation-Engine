@@ -28,6 +28,7 @@ class Server {
       socket.on("executeFunction", this.executeFunction(socket));
       socket.on("showRollOutMenu", this.sendRollOutMenu(socket));
       socket.on("isUserVoted", this.checkUserVoted(socket));
+      socket.on("showDiscardMenu", this.sendDiscardMenu(socket))
     });
   }
 
@@ -37,7 +38,6 @@ class Server {
 
     if (user) {
       const role: any = await userController.fetchRole(user.role_id);
-      socket.emit("userFound", "Login Successfully");
       socket.emit(
         "userFound",
         `Welocme ${user.firstname} ${user.lastname} to the Cafeteria Recommendation System`
@@ -69,6 +69,12 @@ class Server {
     const adminController = new AdminController();
     const result = await adminController.executeFunctionality(6, "");
     socket.emit("sendMenu", result);
+  };
+
+  private sendDiscardMenu = (socket: Socket) => async () => {
+    const chefController = new ChefController();
+    const result = await chefController.executeFunctionality(5, "","");
+    socket.emit("sendDiscardMenu", result);
   };
 
   private checkUserVoted = (socket: Socket) => async (employeeId: number) => {
@@ -107,8 +113,8 @@ class Server {
           if (result === "logout") {
             console.log(`User with ID ${user.employee_id} logging out`);
             socket.emit("loggedOut");
-          } else socket.emit("message", result);
-          socket.emit("message", result);
+          } else socket.emit("message", result)
+          // socket.emit("message", result);
           break;
 
         case "employee":

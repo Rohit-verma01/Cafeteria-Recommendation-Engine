@@ -80,16 +80,36 @@ export const GET_RECOMMENDATIONS = `
       ORDER BY 
         c.category_name, totalScore DESC; `;
 
-export const INSERT_NOTIFICATION=`INSERT INTO notification (message, role_id,type) VALUES (?,?,?)`;
+export const INSERT_NOTIFICATION = `INSERT INTO notification (message, role_id,type) VALUES (?,?,?)`;
 
-export const GET_UNSEEN_NOTIFICATIONS=`
+export const GET_UNSEEN_NOTIFICATIONS = `
         SELECT n.notification_id, n.message
         FROM notification n
         LEFT JOIN usernotification un ON n.notification_id = un.notification_id AND un.employee_id = ?
         WHERE n.role_id = ?
           AND un.notification_id IS NULL
           AND (n.type != 'rollout_menu' OR (n.type = 'rollout_menu' AND n.date = CURRENT_DATE))
-      `
-export const INSERT_INTO_USER_NOTIFICATION= `INSERT INTO usernotification (employee_id, notification_id) VALUES ?`;
+      `;
+export const INSERT_INTO_USER_NOTIFICATION = `INSERT INTO usernotification (employee_id, notification_id) VALUES ?`;
 export const CHECK_VOTE_TODAY = ` SELECT COUNT(*) AS count_votes FROM vote
         WHERE employee_id = ? AND date = CURRENT_DATE`;
+
+export const CHECK_DISCARD_MENU = `
+        SELECT 1
+        FROM discard_menu
+        WHERE MONTH(date) = MONTH(CURDATE())
+        AND YEAR(date) = YEAR(CURDATE())
+        LIMIT 1;
+      `;
+
+export const GET_DISCARD_MENU_ITEMS = `
+      SELECT f.item_id AS itemId, f.item_name AS item, f.item_price AS price
+  FROM fooditem f
+  JOIN (
+    SELECT item_id, AVG(rating) AS avg_rating
+    FROM feedback
+    GROUP BY item_id
+  ) avg_ratings ON f.item_id = avg_ratings.item_id
+  WHERE f.sentiment_score < 1.5
+  AND avg_ratings.avg_rating < 2;
+`;

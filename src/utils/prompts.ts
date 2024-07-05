@@ -1,9 +1,6 @@
 import { createReadlineInterface } from "./readline";
 import { categories, logObject } from "./category";
-import {
-  validateUniqueItems,
-  validateVotedId,
-} from "../client/validation";
+import { validateUniqueItems, validateVotedId } from "../client/validation";
 
 const rl = createReadlineInterface();
 
@@ -17,7 +14,7 @@ export const promptInput = (query: string): Promise<string> =>
 export const promptFunctionSelection = async (
   functions: string[],
   roleName: string
-):Promise<any> => {
+): Promise<any> => {
   const selection = await promptInput("Select a function number: ");
   const selectedIndex = parseInt(selection);
 
@@ -30,6 +27,35 @@ export const promptFunctionSelection = async (
   } else {
     console.error("Invalid function number");
     return promptFunctionSelection(functions, roleName);
+  }
+};
+
+export const promptForDiscardMenu = async (list: any): Promise<any> => {
+  console.log("1) Remove Food Item");
+  console.log("2) Get Detailed Feedback");
+  const index = parseInt(await promptInput("Select a function number: "));
+  if (index === 1) {
+    const name = await promptInput("Enter item name to remove from above list: ")
+    
+    const selectedFoodItem = list.find((item: any) => item.item === name);
+    if (selectedFoodItem) {
+      return { index: 7, data: selectedFoodItem.item };
+    } else {
+      console.log("Please enter a valid item name from the table only.");
+      return promptForDiscardMenu(list);
+    }
+  } else if (index === 2) {
+    const itemId = parseInt(await promptInput("Enter item Id to get detailed feedback from above list: "));
+    const selectedFoodItem = list.find((item: any) => item.itemId === itemId);
+    if (selectedFoodItem) {
+      return { index: 8, data: selectedFoodItem.itemId };
+    } else {
+      console.log("Please enter a valid item ID from the table only.");
+      return promptForDiscardMenu(list);
+    }
+  } else {
+    console.log("Invalid selection. Please select a valid function number.");
+    return promptForDiscardMenu(list);
   }
 };
 
@@ -71,7 +97,7 @@ export const promptForDeleteItem = async () => {
   return foodName;
 };
 
-export const promptForRollOut = async (functions: any) => {
+export const promptForRollOut = async () => {
   let noOfItem = parseInt(
     await promptInput("Enter number of breakfast you want for recommendation: ")
   );
@@ -108,7 +134,7 @@ export const promptForRollOut = async (functions: any) => {
   }
   if (validateUniqueItems({ breakfast, lunch, dinner }))
     return { breakfast, lunch, dinner };
-  else promptForRollOut(functions);
+  else promptForRollOut();
 };
 
 export const promptForVote = async (menu: any) => {

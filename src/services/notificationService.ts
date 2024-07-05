@@ -2,12 +2,15 @@ import { RowDataPacket } from "mysql2";
 import { pool } from "../config/db_connection";
 import { FeedbackRepository } from "../repositories/feedbackRepository";
 import { NotificationRepository } from "../repositories/notificationRepository";
+import { MenuItemService } from "./menuItemService";
 
 export class NotificationService {
   private notificationRepository: NotificationRepository;
+  private menuItemService: MenuItemService;
 
   constructor() {
     this.notificationRepository = new NotificationRepository();
+    this.menuItemService = new MenuItemService();
   }
 
   async sendRollOutNotification(item: any, roleId: number) {
@@ -34,7 +37,11 @@ export class NotificationService {
                      Lunch: ${lunchNames.join(", ")}, 
                      Dinner: ${dinnerNames.join(", ")}. 
                      You can now vote for them.`;
-      await this.notificationRepository.addNotification(message, roleId,"rollout_menu");
+      await this.notificationRepository.addNotification(
+        message,
+        roleId,
+        "rollout_menu"
+      );
     } catch (error) {
       console.error(
         "Unknown error in Notification Service while sending notification:",
@@ -46,7 +53,11 @@ export class NotificationService {
   async sendAddItemNotification(item: string, roleId: number) {
     try {
       const message = `${item} is newly added in the menu`;
-      return await this.notificationRepository.addNotification(message, roleId,'item_change');
+      return await this.notificationRepository.addNotification(
+        message,
+        roleId,
+        "item_change"
+      );
     } catch (error) {
       console.error(
         "Unknown error in Notification Service while sending notification:",
@@ -59,7 +70,30 @@ export class NotificationService {
   async sendDeleteItemNotification(item: string, roleId: number) {
     try {
       const message = `${item} is deleted from the menu`;
-      return await this.notificationRepository.addNotification(message, roleId,'item_change');
+      return await this.notificationRepository.addNotification(
+        message,
+        roleId,
+        "item_change"
+      );
+    } catch (error) {
+      console.error(
+        "Unknown error in Notification Service while sending notification:",
+        error
+      );
+      return { success: false, message: "Failed to send notification." };
+    }
+  }
+
+  async sendDetailedFeedbackNotification(itemId: number, roleId: number) {
+    try {
+      const itemName = await this.menuItemService.getItemName(itemId);
+      console.log(itemName);
+      const message = `We are trying to improve your experience with ${itemName}. Please provide your feedback by giving detailed feedback and help us.`;
+      return await this.notificationRepository.addNotification(
+        message,
+        roleId,
+        "item_change"
+      );
     } catch (error) {
       console.error(
         "Unknown error in Notification Service while sending notification:",
@@ -80,7 +114,11 @@ export class NotificationService {
       } else if (availabilityStatus) {
         message = `${foodName} availability status has been changed.`;
       }
-      return await this.notificationRepository.addNotification(message, roleId,'item_change');
+      return await this.notificationRepository.addNotification(
+        message,
+        roleId,
+        "item_change"
+      );
     } catch (error) {
       console.error(
         "Unknown error in Notification Service while sending notification:",
@@ -90,7 +128,7 @@ export class NotificationService {
     }
   }
 
-  async viewNotification(user:any) {
+  async viewNotification(user: any) {
     try {
       return await this.notificationRepository.getNotification(user);
     } catch (error) {
@@ -98,7 +136,7 @@ export class NotificationService {
         "Unknown error in Notification Service while sending notification:",
         error
       );
-      return  "Failed to send notification." ;
+      return "Failed to send notification.";
     }
   }
 }
