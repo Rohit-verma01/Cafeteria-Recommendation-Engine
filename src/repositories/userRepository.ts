@@ -1,5 +1,11 @@
 import { pool } from "../config/db_connection";
-import { GET_ROLE_BY_ID, GET_USER_BY_ID } from "../queries/queries";
+import {
+  CHECK_EMPLOYEE_EXISTS,
+  GET_ROLE_BY_ID,
+  GET_USER_BY_ID,
+  INSERT_EMPLOYEE_WITH_PREFERENCE,
+  UPDATE_EMPLOYEE_WITH_PREFERENCE,
+} from "../queries/queries";
 import { IUser, IRole } from "../types";
 import { RowDataPacket } from "mysql2";
 
@@ -50,23 +56,14 @@ export class UserRepository {
   async updateProfileById(payload: any, id: number) {
     const { dietType, spicyLevel, prefer, likeSweet } = payload;
 
-    const checkQuery = "SELECT COUNT(*) AS count FROM employee WHERE id = ?";
-    const insertQuery = `
-    INSERT INTO employee (id, diet_preference, spice_level, cuisine_preference, is_sweet_tooth)
-    VALUES (?, ?, ?, ?, ?)
-  `;
-    const updateQuery = `
-    UPDATE employee
-    SET diet_preference = ?, spice_level = ?, cuisine_preference = ?, is_sweet_tooth = ?
-    WHERE id = ?
-  `;
-
     try {
-      const [rows] = await pool.query<RowDataPacket[]>(checkQuery, [id]);
+      const [rows] = await pool.query<RowDataPacket[]>(CHECK_EMPLOYEE_EXISTS, [
+        id,
+      ]);
       const count = rows[0].count;
 
       if (count == 0) {
-        await pool.query(insertQuery, [
+        await pool.query(INSERT_EMPLOYEE_WITH_PREFERENCE, [
           id,
           dietType,
           spicyLevel,
@@ -74,7 +71,7 @@ export class UserRepository {
           likeSweet,
         ]);
       } else {
-        await pool.query(updateQuery, [
+        await pool.query(UPDATE_EMPLOYEE_WITH_PREFERENCE, [
           dietType,
           spicyLevel,
           prefer,

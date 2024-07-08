@@ -5,6 +5,7 @@ import {
   DROP_TOP_VOTE,
   DROP_VOTE_COUNT,
   GET_ALL_MENU_ITEMS,
+  GET_ITEM_BY_ID,
   GET_RECOMMENDATIONS,
   INSERT_FINAL_MENU,
   TOP_VOTE,
@@ -59,8 +60,7 @@ export class MenuItemRepository {
 
   async getItemName(itemId: number) {
     try {
-      const query = `SELECT item_name FROM fooditem WHERE item_id = ?;`;
-      const [rows] = await pool.query<RowDataPacket[any]>(query, [itemId]);
+      const [rows] = await pool.query<RowDataPacket[any]>(GET_ITEM_BY_ID, [itemId]);
       return rows[0].item_name;
     } catch (error) {
       console.error(`Error getting menu item name:`, error);
