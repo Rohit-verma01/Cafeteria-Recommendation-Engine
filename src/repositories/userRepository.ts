@@ -46,4 +46,47 @@ export class UserRepository {
       return "Failed to fetch role details\n";
     }
   }
+
+  async updateProfileById(payload: any, id: number) {
+    const { dietType, spicyLevel, prefer, likeSweet } = payload;
+
+    const checkQuery = "SELECT COUNT(*) AS count FROM employee WHERE id = ?";
+    const insertQuery = `
+    INSERT INTO employee (id, diet_preference, spice_level, cuisine_preference, is_sweet_tooth)
+    VALUES (?, ?, ?, ?, ?)
+  `;
+    const updateQuery = `
+    UPDATE employee
+    SET diet_preference = ?, spice_level = ?, cuisine_preference = ?, is_sweet_tooth = ?
+    WHERE id = ?
+  `;
+
+    try {
+      const [rows] = await pool.query<RowDataPacket[]>(checkQuery, [id]);
+      const count = rows[0].count;
+
+      if (count == 0) {
+        await pool.query(insertQuery, [
+          id,
+          dietType,
+          spicyLevel,
+          prefer,
+          likeSweet,
+        ]);
+      } else {
+        await pool.query(updateQuery, [
+          dietType,
+          spicyLevel,
+          prefer,
+          likeSweet,
+          id,
+        ]);
+      }
+
+      return "Employee profile updated successfully.\n";
+    } catch (error) {
+      console.error("Error while updating the employee profile:", error);
+      return "Failed to update employee profile.\n";
+    }
+  }
 }

@@ -5,7 +5,7 @@ import { DiscardItemService } from "../services/discardItemService";
 import { FeedbackService } from "../services/feedbackService";
 import { MenuItemService } from "../services/menuItemService";
 import { NotificationService } from "../services/notificationService";
-import { RecommendationService } from "../services/recommendationService";
+import { UserService } from "../services/userService";
 
 export class EmployeeController {
   private menuItemService: MenuItemService;
@@ -14,6 +14,7 @@ export class EmployeeController {
   private voteRepository: VoteRepository;
   private notificationService: NotificationService;
   private discardItemService: DiscardItemService;
+  private userService: UserService;
 
   constructor() {
     this.menuItemService = new MenuItemService();
@@ -22,6 +23,7 @@ export class EmployeeController {
     this.voteRepository = new VoteRepository();
     this.notificationService = new NotificationService();
     this.discardItemService = new DiscardItemService();
+    this.userService = new UserService();
   }
 
   viewRollOutMenu = async () => {
@@ -59,12 +61,19 @@ export class EmployeeController {
 
   sendDetailedFeedback = async (payload: any, employeeId: number) => {
     if (payload)
-      return await this.discardItemService.addDetailedFeedback(payload,employeeId);
+      return await this.discardItemService.addDetailedFeedback(
+        payload,
+        employeeId
+      );
     else return { data: "", type: "message" };
   };
 
+  sendUpdatedProfileInfo = async (payload: any, employeeId: number) => {
+    const data = await this.userService.updateProfileById(payload,employeeId);
+    return { data, type: "message" };
+  };
+
   async executeFunctionality(index: number, payload: any, user: any) {
-    console.log("user",user)
     switch (index) {
       case 1:
         return this.viewMenu();
@@ -77,9 +86,11 @@ export class EmployeeController {
       case 5:
         return this.sendDetailedFeedback(payload, user.employee_id);
       case 6:
-        return this.viewRollOutMenu();
+        return this.sendUpdatedProfileInfo(payload,user.employee_id);
       case 7:
         return "logout";
+      case 8:
+        return this.viewRollOutMenu();
       default:
         console.error("Invalid function index for admin");
     }

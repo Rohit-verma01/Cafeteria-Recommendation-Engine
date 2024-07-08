@@ -2,6 +2,7 @@ import { Socket } from "socket.io-client";
 import {
   promptForDeatiledFeedback,
   promptForFeedback,
+  promptForUpdateProfile,
   promptForVote,
 } from "../utils/prompts";
 export const handleEmployeeInput = async (
@@ -21,6 +22,8 @@ export const handleEmployeeInput = async (
     case 5:
       return await giveDetailedFeedback(socket, employeeId);
     case 6:
+      return await promptForUpdateProfile();
+    case 7:
       return "";
   }
 };
@@ -82,3 +85,4 @@ export const giveDetailedFeedback = async (
   console.log("Already did it in a month. Try again in next month")
   return "";
 };
+

@@ -63,3 +63,10 @@ export const checkItemsBelongToDifferentMeal = (
 
   return true;
 };
+
+export const validateOptionsForUpdateProfile = (options:any,selected:number) => {
+  const optionKeys = Object.keys(options).map(Number);
+  if(optionKeys.includes(selected))
+    return true;
+  return false
+}

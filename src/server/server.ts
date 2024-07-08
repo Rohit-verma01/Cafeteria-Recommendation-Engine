@@ -93,7 +93,7 @@ class Server {
 
   private sendRollOutMenu = (socket: Socket) => async () => {
     const employeeController = new EmployeeController();
-    const result = await employeeController.executeFunctionality(6, "", "");
+    const result = await employeeController.executeFunctionality(8, "", "");
     socket.emit("sendRecommendedMenu", result);
   };
 

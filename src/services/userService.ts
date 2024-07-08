@@ -23,4 +23,13 @@ export class UserService {
       return "Error in fetching the user role";
     }
   }
+
+  async updateProfileById(payload:any,id:number){
+    try {
+      return await this.userRepository.updateProfileById(payload,id);
+    } catch (error) {
+      console.error("Error in service while updating employee profile:", error);
+      return "Error in updating the employee profile";
+    }
+  }
 }
