@@ -52,7 +52,7 @@ export const voteForItems = async (socket: Socket, employeeId: number) => {
   message && console.log(message);
   if (message == "") {
     await new Promise<void>((resolve) => {
-      socket.emit("showRollOutMenu");
+      socket.emit("showRollOutMenu",employeeId);
       socket.on("sendRecommendedMenu", async (response) => {
         menu = response.data;
         console.table(response.data);

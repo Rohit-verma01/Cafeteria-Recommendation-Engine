@@ -3,10 +3,10 @@ import { RowDataPacket } from "mysql2";
 import { GET_ALL_RECOMMENDED_MENU_ITEMS } from "../queries/queries";
 
 export class RecommendedMenuRepository {
-  async viewRecommededItems() {
+  async viewRecommededItems(employeeId:number) {
     try {
       const [rows] = await pool.query<RowDataPacket[]>(
-        GET_ALL_RECOMMENDED_MENU_ITEMS
+        GET_ALL_RECOMMENDED_MENU_ITEMS,[employeeId]
       );
       return rows;
     } catch (error) {

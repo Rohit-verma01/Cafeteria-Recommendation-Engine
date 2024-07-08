@@ -91,9 +91,9 @@ class Server {
     socket.emit("checkUserVoted", result);
   };
 
-  private sendRollOutMenu = (socket: Socket) => async () => {
+  private sendRollOutMenu = (socket: Socket) => async (employeeId:number) => {
     const employeeController = new EmployeeController();
-    const result = await employeeController.executeFunctionality(8, "", "");
+    const result = await employeeController.executeFunctionality(8, "", employeeId);
     socket.emit("sendRecommendedMenu", result);
   };
 

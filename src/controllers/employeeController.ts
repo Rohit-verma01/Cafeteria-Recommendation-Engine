@@ -26,8 +26,8 @@ export class EmployeeController {
     this.userService = new UserService();
   }
 
-  viewRollOutMenu = async () => {
-    const data = await this.recommededRepository.viewRecommededItems();
+  viewRollOutMenu = async (employeeId:number) => {
+    const data = await this.recommededRepository.viewRecommededItems(employeeId);
     return { data, type: "recommendedItem" };
   };
 
@@ -90,7 +90,7 @@ export class EmployeeController {
       case 7:
         return "logout";
       case 8:
-        return this.viewRollOutMenu();
+        return this.viewRollOutMenu(user);
       default:
         console.error("Invalid function index for admin");
     }
