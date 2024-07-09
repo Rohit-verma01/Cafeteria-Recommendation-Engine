@@ -28,17 +28,21 @@ export const GET_ALL_RECOMMENDED_MENU_ITEMS = `SELECT
   rm.item_id, 
   f.item_name, 
   mt.meal_type, 
-  c.category_name
-  FROM recommendedmenu rm 
-  JOIN fooditem f ON rm.item_id = f.item_id 
-  JOIN mealtype mt ON rm.meal_type_id = mt.meal_type_id 
-  JOIN category c ON f.category_id = c.category_id
-  JOIN employee e ON e.id = ? 
-  ORDER BY 
-    CASE WHEN f.diet_preference = e.diet_preference THEN 0 ELSE 1 END,
-    CASE WHEN f.cuisine_preference = e.cuisine_preference THEN 0 ELSE 1 END,
-    CASE WHEN f.spice_level = e.spice_level THEN 0 ELSE 1 END,
-    CASE WHEN f.is_sweet = e.is_sweet_tooth THEN 0 ELSE 1 END;
+  c.category_name,
+  AVG(fd.rating) AS average_rating, 
+  f.sentiments AS sentiments
+FROM recommendedmenu rm 
+JOIN fooditem f ON rm.item_id = f.item_id 
+JOIN mealtype mt ON rm.meal_type_id = mt.meal_type_id 
+JOIN category c ON f.category_id = c.category_id
+JOIN employee e ON e.id = ? 
+LEFT JOIN feedback fd ON f.item_id = fd.item_id 
+GROUP BY rm.item_id, f.item_name, mt.meal_type, c.category_name, f.sentiments
+ORDER BY 
+  CASE WHEN f.diet_preference = e.diet_preference THEN 0 ELSE 1 END,
+  CASE WHEN f.cuisine_preference = e.cuisine_preference THEN 0 ELSE 1 END,
+  CASE WHEN f.spice_level = e.spice_level THEN 0 ELSE 1 END,
+  CASE WHEN f.is_sweet = e.is_sweet_tooth THEN 0 ELSE 1 END;
 `;
 
 export const INSERT_FEEDBACK = `INSERT INTO feedback (item_id, employee_id, comment, rating, date) 

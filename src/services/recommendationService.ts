@@ -32,8 +32,8 @@ export class RecommendationService {
   }
 
   sentimentsAndScore(comments: string[]) {
-    const positiveWeight = 1; // Weight for positive words
-    const negativeWeight = -1; // Weight for negative words
+    const positiveWeight = 1;
+    const negativeWeight = -1;
     let positiveSentiments: string[] = [];
     let negativeSentiments: string[] = [];
 
@@ -87,17 +87,13 @@ export class RecommendationService {
     const topNegative = getTopWords(negativeSentiments, 3);
     const positiveSummary =
       topPositive.length > 0
-        ? `The food received positive feedback for being: ${topPositive.join(
-            ", "
-          )}`
-        : "There were no positive comments about the food.";
+        ? `Liked for: ${topPositive.join(", ")}`
+        : "No positive comments.";
 
     const negativeSummary =
       topNegative.length > 0
-        ? `However, there were some negative comments, such as: ${topNegative.join(
-            ", "
-          )}`
-        : "There were no negative comments about the food.";
+        ? `Criticized for: ${topNegative.join(", ")}`
+        : "No negative comments.";
 
     return `${positiveSummary}. ${negativeSummary}.`;
   }

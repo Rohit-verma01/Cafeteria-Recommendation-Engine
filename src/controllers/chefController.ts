@@ -51,7 +51,7 @@ export class ChefController {
   
  
   removeItem = async(payload:any,user:any) => {
-    return await this.discardItemService.removeItem(payload,user)
+    return await this.discardItemService.removeItem(payload,user);
   };
 
   async executeFunctionality(index: number, payload: any, user: any) {
