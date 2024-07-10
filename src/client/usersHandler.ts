@@ -14,7 +14,7 @@ export const handleUserSelection = async (
     case "admin":
       return await handleAdminInput(selectedIndex);
     case "chef":
-      return await handleChefInput(selectedIndex, socket, functions);
+      return await handleChefInput(selectedIndex, socket);
     case "employee":
       return await handleEmployeeInput(selectedIndex, socket, employeeId);
   }

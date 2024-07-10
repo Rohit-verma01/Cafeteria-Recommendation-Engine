@@ -32,4 +32,8 @@ export class UserService {
       return "Error in updating the employee profile";
     }
   }
+
+  async addUserActivity(employeeId:number,activity:string){
+   await this.userRepository.addActivity(employeeId,activity);
+  }
 }

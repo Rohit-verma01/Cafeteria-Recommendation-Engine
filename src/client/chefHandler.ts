@@ -3,7 +3,6 @@ import { Socket } from "socket.io-client";
 export const handleChefInput = async (
     selectedIndex: number,
     socket: Socket,
-    functions: any
   ) => {
     switch (selectedIndex) {
       case 1:
@@ -25,7 +24,7 @@ export const handleChefInput = async (
     await new Promise<void>(async(resolve) => {
       socket.emit("showMenu");
       socket.on("sendMenu", async (response) => {
-        console.table(response.data, ["itemId", "item", "price", "category","totalScore"]);
+        console.table(response, ["itemId", "item", "price", "category","totalScore"]);
         console.log(
           "Above are the system generated category wise sorted recommendation for you.\nYou can choose from above menu."
         );

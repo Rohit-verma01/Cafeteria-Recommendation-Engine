@@ -4,6 +4,7 @@ import {
   GET_ROLE_BY_ID,
   GET_USER_BY_ID,
   INSERT_EMPLOYEE_WITH_PREFERENCE,
+  INSERT_USER_ACTIVITY,
   UPDATE_EMPLOYEE_WITH_PREFERENCE,
 } from "../queries/queries";
 import { IUser, IRole } from "../types";
@@ -55,7 +56,6 @@ export class UserRepository {
 
   async updateProfileById(payload: any, id: number) {
     const { dietType, spicyLevel, prefer, likeSweet } = payload;
-
     try {
       const [rows] = await pool.query<RowDataPacket[]>(CHECK_EMPLOYEE_EXISTS, [
         id,
@@ -85,5 +85,13 @@ export class UserRepository {
       console.error("Error while updating the employee profile:", error);
       return "Failed to update employee profile.\n";
     }
+  }
+
+  async addActivity(employeeId:number,activity:string){
+  try {
+    await pool.execute(INSERT_USER_ACTIVITY, [employeeId, activity]);
+  } catch (error) {
+    console.error("Error adding activity:", error);
+  }
   }
 }

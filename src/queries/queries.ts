@@ -192,3 +192,6 @@ export const UPDATE_EMPLOYEE_WITH_PREFERENCE = `UPDATE employee
   SET diet_preference = ?, spice_level = ?, cuisine_preference = ?, is_sweet_tooth = ?
   WHERE id = ?
 `;
+
+export const INSERT_USER_ACTIVITY = 
+`INSERT INTO useractivity (employee_id, activity) VALUES (?, ?)`;

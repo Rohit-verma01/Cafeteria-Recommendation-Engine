@@ -1,5 +1,5 @@
 import { FeedbackRepository } from "../repositories/feedbackRepository";
-import { negativeWords, positiveWords } from "../utils/constants";
+import { negativeWords, positiveWords } from "../utils/sentimentWords";
 import { getTopWords } from "../server/serverUtils";
 
 export class RecommendationService {

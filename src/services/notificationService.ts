@@ -31,7 +31,6 @@ export class NotificationService {
         .filter((row) => item.dinner.includes(row.item_id))
         .map((row) => row.item_name);
 
-      // Construct the notification message
       const message = `The following items are rolled out: 
                      Breakfast: ${breakfastNames.join(", ")}, 
                      Lunch: ${lunchNames.join(", ")}, 

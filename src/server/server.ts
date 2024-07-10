@@ -7,6 +7,7 @@ import { ChefController } from "../controllers/chefController";
 import { EmployeeController } from "../controllers/employeeController";
 import { VoteRepository } from "../repositories/voteRepository";
 import { DiscardItemService } from "../services/discardItemService";
+import { MenuItemService } from "../services/menuItemService";
 
 class Server {
   private httpServer: HTTPServer;
@@ -68,8 +69,8 @@ class Server {
   };
 
   private sendMenu = (socket: Socket) => async () => {
-    const adminController = new AdminController();
-    const result = await adminController.executeFunctionality(6, "");
+    const menuItemService = new MenuItemService();
+    const result = await menuItemService.viewRecommendationMenu();
     socket.emit("sendMenu", result);
   };
 
@@ -79,9 +80,9 @@ class Server {
     socket.emit("sendFeedbackQuestion", result);
   };
 
-  private sendDiscardMenu = (socket: Socket) => async () => {
+  private sendDiscardMenu = (socket: Socket) => async (employeeId:number) => {
     const chefController = new ChefController();
-    const result = await chefController.executeFunctionality(5, "","");
+    const result = await chefController.executeFunctionality(5, "",employeeId);
     socket.emit("sendDiscardMenu", result);
   };
 
@@ -104,7 +105,7 @@ class Server {
       switch (roleName) {
         case "admin":
           const adminController = new AdminController();
-          result = await adminController.executeFunctionality(index, payload);
+          result = await adminController.executeFunctionality(index, payload,user.employee_id);
           if (result === "logout") {
             console.log(`User with ID ${user.employee_id} logging out`);
             socket.emit("loggedOut");
