@@ -23,18 +23,29 @@ class Client {
     this.socket.on("loggedOut", this.loggedOut);
   }
 
-  private onConnect = () => {
+  private onConnect = async () => {
     console.log("Connected to the server");
-    promptInput("Enter your employee ID: ").then((id) => {
-      this.socket.emit("authenticateUser", parseInt(id));
-    });
+    await this.authenticateUser();
   };
 
+  private authenticateUser = async (message?: string) => {
+    if (message) console.log(message);
+    while (true) {
+      const id = parseInt(await promptInput("Enter you employee ID: "));
+      if (!isNaN(id)) {
+        this.socket.emit("authenticateUser", id);
+        return;
+      } else {
+        console.log("Please enter integer only.");
+      }
+    }
+  };
+  
   private showMenu = (data: any) => {
     console.log(data);
   };
 
-  private onUserFound = (message: string) => {
+  private onUserFound = async (message: string) => {
     console.log(message);
   };
 
@@ -91,6 +102,7 @@ class Client {
 
   private onUserNotFound = (message: string) => {
     console.error(message);
+    this.authenticateUser("Please enter valid employee ID");
   };
 
   private onServerDisconnect = () => {
