@@ -41,11 +41,15 @@ class Server {
 
     if (user) {
       const role: any = await userController.fetchRole(user.role_id);
-      socket.emit(
-        "userFound",
-        `Welocme ${user.firstname} ${user.lastname} to the Cafeteria Recommendation System`
-      );
-      this.sendAvailableFunctions(socket, role!.role_name, user);
+      if (role) {
+        socket.emit(
+          "userFound",
+          `Welocme ${user.firstname} ${user.lastname} to the Cafeteria Recommendation System`
+        );
+        this.sendAvailableFunctions(socket, role!.role_name, user);
+      } else {
+        socket.emit("message", "Role not found");
+      }
     } else {
       socket.emit("userNotFound", "User not found");
     }
@@ -74,15 +78,18 @@ class Server {
     socket.emit("sendMenu", result);
   };
 
-  private sendFeedbackQuestion = (socket: Socket) => async (employeeId:number) => {
-    const discardItemService = new DiscardItemService();
-    const result = await discardItemService.getDetailedFeedbackItem(employeeId);
-    socket.emit("sendFeedbackQuestion", result);
-  };
+  private sendFeedbackQuestion =
+    (socket: Socket) => async (employeeId: number) => {
+      const discardItemService = new DiscardItemService();
+      const result = await discardItemService.getDetailedFeedbackItem(
+        employeeId
+      );
+      socket.emit("sendFeedbackQuestion", result);
+    };
 
-  private sendDiscardMenu = (socket: Socket) => async (employeeId:number) => {
+  private sendDiscardMenu = (socket: Socket) => async (employeeId: number) => {
     const chefController = new ChefController();
-    const result = await chefController.executeFunctionality(5, "",employeeId);
+    const result = await chefController.executeFunctionality(5, "", employeeId);
     socket.emit("sendDiscardMenu", result);
   };
 
@@ -92,9 +99,13 @@ class Server {
     socket.emit("checkUserVoted", result);
   };
 
-  private sendRollOutMenu = (socket: Socket) => async (employeeId:number) => {
+  private sendRollOutMenu = (socket: Socket) => async (employeeId: number) => {
     const employeeController = new EmployeeController();
-    const result = await employeeController.executeFunctionality(8, "", employeeId);
+    const result = await employeeController.executeFunctionality(
+      8,
+      "",
+      employeeId
+    );
     socket.emit("sendRecommendedMenu", result);
   };
 
@@ -105,7 +116,11 @@ class Server {
       switch (roleName) {
         case "admin":
           const adminController = new AdminController();
-          result = await adminController.executeFunctionality(index, payload,user.employee_id);
+          result = await adminController.executeFunctionality(
+            index,
+            payload,
+            user.employee_id
+          );
           if (result === "logout") {
             console.log(`User with ID ${user.employee_id} logging out`);
             socket.emit("loggedOut");
@@ -122,7 +137,7 @@ class Server {
           if (result === "logout") {
             console.log(`User with ID ${user.employee_id} logging out`);
             socket.emit("loggedOut");
-          } else socket.emit("message", result)
+          } else socket.emit("message", result);
           break;
 
         case "employee":

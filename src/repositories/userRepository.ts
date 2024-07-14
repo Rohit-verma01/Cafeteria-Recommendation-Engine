@@ -27,7 +27,7 @@ export class UserRepository {
       }
     } catch (error) {
       console.error("Error querying the database:", error);
-      return "Failed to fetch user details.\n";
+      return "Enbale to fetch user"
     }
   }
 

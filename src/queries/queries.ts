@@ -28,7 +28,6 @@ export const GET_ALL_RECOMMENDED_MENU_ITEMS = `SELECT
   rm.item_id, 
   f.item_name, 
   mt.meal_type, 
-  c.category_name,
   AVG(fd.rating) AS average_rating, 
   f.sentiments AS sentiments
 FROM recommendedmenu rm 
