@@ -5,10 +5,10 @@ import { getFunctionsByRole } from "./serverUtils";
 import { AdminController } from "../controllers/adminController";
 import { ChefController } from "../controllers/chefController";
 import { EmployeeController } from "../controllers/employeeController";
-import { VoteRepository } from "../repositories/voteRepository";
 import { DiscardItemService } from "../services/discardItemService";
 import { MenuItemService } from "../services/menuItemService";
 import { VoteService } from "../services/voteService";
+import { RecommendedMenuService } from "../services/recommendedMenuService";
 
 class Server {
   private httpServer: HTTPServer;
@@ -89,14 +89,14 @@ class Server {
   }
 
   private checkRollOut = (socket:Socket) => async()=>{
-    const menuItemService = new MenuItemService();
-    const result = await menuItemService.checkRollOut()
+    const recommendedMenuService = new RecommendedMenuService();
+    const result = await recommendedMenuService.checkRollOut()
     socket.emit("checkRollOut",result)
   }
 
   private selectFromRollOut = (socket:Socket)=> async()=>{
-    const menuItemService = new MenuItemService();
-    const result = await menuItemService.selectFromRollOut()
+    const recommendedMenuService = new RecommendedMenuService();
+    const result = await recommendedMenuService.selectFromRollOut()
     socket.emit("selectFromRollOut",result)
   }
   private sendFeedbackQuestion =

@@ -1,16 +1,13 @@
 import { pool } from "../config/db_connection";
 import { RowDataPacket } from "mysql2";
 import {
+  CHECK_IF_FINAL_MENU_EXISTS,
   DELETE_FOOD_ITEM_BY_NAME,
-  DROP_TOP_VOTE,
-  DROP_VOTE_COUNT,
   GET_ALL_MENU_ITEMS,
   GET_ITEM_BY_ID,
   GET_RECOMMENDATIONS,
   INSERT_FINAL_MENU,
-  TOP_VOTE,
   UPDATE_FOOD_ITEM_SENTIMENTS_BY_ID,
-  VOTE_COUNT,
 } from "../queries/queries";
 import {
   INSERT_FOODITEM,
@@ -26,7 +23,7 @@ export class MenuItemRepository {
       return rows;
     } catch (error) {
       console.error("Error querying all menu items:", error);
-      return "Failed to fetch menu items.\n";
+      throw error;
     }
   }
 
@@ -41,7 +38,7 @@ export class MenuItemRepository {
       return { success: true, message: "Item Added Successfully" };
     } catch (error) {
       console.error("Error adding menu item:", error);
-      return { success: false, message: "Failed to add menu item.\n" };
+      throw error;
     }
   }
 
@@ -51,10 +48,7 @@ export class MenuItemRepository {
       return { success: true, message: `${name} item deleted` };
     } catch (error) {
       console.error(`Error deleting menu item "${name}":`, error);
-      return {
-        success: true,
-        message: `Failed to delete menu item "${name}".\n`,
-      };
+      throw error;
     }
   }
 
@@ -64,7 +58,7 @@ export class MenuItemRepository {
       return rows[0].item_name;
     } catch (error) {
       console.error(`Error getting menu item name:`, error);
-      return "Error in getting name"
+      throw error;
     }
   }
 
@@ -101,22 +95,18 @@ export class MenuItemRepository {
       }
     } catch (error) {
       console.error(`Error updating menu item "${foodName}":`, error);
-      return {
-        success: false,
-        message: `Failed to update menu item "${foodName}".\n`,
-      };
+     throw error;
     }
   }
 
   async finalizeTheMenu(items:any) {
     try {
       const values = items.map((item:any) => [item]);
-      const INSERT_FINAL_MENU = 'INSERT INTO finalmenu (item_id) VALUES ?';
       await pool.query(INSERT_FINAL_MENU, [values]);
       return "Menu finalized successfully\n";
     } catch (error) {
       console.error("Error finalizing the menu:", error);
-      return "Failed to finalize the menu.\n";
+      throw error;
     }
   }
 
@@ -127,7 +117,7 @@ export class MenuItemRepository {
       return "Sentiments added successfully\n";
     } catch (error) {
       console.error("Error in adding the sentiments:", error);
-      return "Failed to adding the sentiments.\n";
+      throw error;
     }
   }
 
@@ -137,18 +127,13 @@ export class MenuItemRepository {
       return rows;
     } catch (error) {
       console.error("Error in getting the recommendation:", error);
-      return "Failed to view the recommendation.\n";
+      throw error;
     }
   }
 
     async checkFinalMenu(){
       try {
-        const query = `
-        SELECT 1 
-        FROM finalmenu 
-        WHERE date = CURRENT_DATE;
-      `;
-        const [rows] = await pool.query<RowDataPacket[]>(query);
+        const [rows] = await pool.query<RowDataPacket[]>(CHECK_IF_FINAL_MENU_EXISTS);
         return rows.length>0;
       } catch (error) {
         console.error("Error while checking final menu:", error);

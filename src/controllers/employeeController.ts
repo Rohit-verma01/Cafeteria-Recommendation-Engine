@@ -1,5 +1,4 @@
 import { RecommendedMenuRepository } from "../repositories/recommendedMenuRepository";
-import { VoteRepository } from "../repositories/voteRepository";
 import { DiscardItemService } from "../services/discardItemService";
 import { FeedbackService } from "../services/feedbackService";
 import { MenuItemService } from "../services/menuItemService";
@@ -7,12 +6,12 @@ import { NotificationService } from "../services/notificationService";
 import { UserService } from "../services/userService";
 import { UserActivity } from "../utils/constants";
 import { VoteService } from "../services/voteService";
+import { RecommendedMenuService } from "../services/recommendedMenuService";
 
 export class EmployeeController {
   private menuItemService: MenuItemService;
   private feedbackService: FeedbackService;
-  private recommededRepository: RecommendedMenuRepository;
-  private voteRepository: VoteRepository;
+  private recommendedMenuService: RecommendedMenuService;
   private notificationService: NotificationService;
   private discardItemService: DiscardItemService;
   private userService: UserService;
@@ -20,9 +19,8 @@ export class EmployeeController {
 
   constructor() {
     this.menuItemService = new MenuItemService();
-    this.recommededRepository = new RecommendedMenuRepository();
     this.feedbackService = new FeedbackService();
-    this.voteRepository = new VoteRepository();
+    this.recommendedMenuService = new RecommendedMenuService();
     this.notificationService = new NotificationService();
     this.discardItemService = new DiscardItemService();
     this.userService = new UserService();
@@ -30,7 +28,7 @@ export class EmployeeController {
   }
 
   viewRollOutMenu = async (employeeId: number) => {
-    const data = await this.recommededRepository.viewRecommededItems(
+    const data = await this.recommendedMenuService.viewRecommededItems(
       employeeId
     );
     return { data, type: "recommendedItem" };

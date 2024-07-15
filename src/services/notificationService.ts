@@ -131,10 +131,10 @@ export class NotificationService {
       return await this.notificationRepository.getNotification(user);
     } catch (error) {
       console.error(
-        "Unknown error in Notification Service while sending notification:",
+        "Unknown error in Notification Service while viewing notification:",
         error
       );
-      return "Failed to send notification.";
+      return "Failed to view notification.";
     }
   }
 }

@@ -38,7 +38,8 @@ export class NotificationRepository {
       }
       return unseenMessages;
     } catch (error) {
-      return "Failed to view notification";
+      console.log("Error while getting notification: ",error)
+      throw error;
     }
   }
 }

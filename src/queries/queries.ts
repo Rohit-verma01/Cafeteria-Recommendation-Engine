@@ -52,29 +52,7 @@ export const GET_FEEDBACK_BY_FOOD_ID = `SELECT comment FROM feedback WHERE item_
 export const INSERT_VOTES = `INSERT INTO vote (item_id, employee_id) 
    VALUES ?;`;
 
-export const VOTE_COUNT = `CREATE TEMPORARY TABLE votecount AS 
-   SELECT v.item_id, COUNT(v.item_id) AS vote_count 
-   FROM vote v 
-   WHERE v.date = CURRENT_DATE 
-   GROUP BY v.item_id;`;
-
-export const TOP_VOTE = `CREATE TEMPORARY TABLE topvote AS 
-   SELECT rm.meal_type_id, vc.item_id, vc.vote_count 
-   FROM votecount vc 
-   JOIN recommendedmenu rm ON vc.item_id = rm.item_id;`;
-
-export const DROP_VOTE_COUNT = `DROP TEMPORARY TABLE IF EXISTS votecount;`;
-
-export const DROP_TOP_VOTE = `DROP TEMPORARY TABLE IF EXISTS topvote;`;
-
-export const INSERT_FINAL_MENU = `INSERT INTO finalmenu (item_id) 
-   SELECT item_id 
-   FROM (
-     SELECT item_id, meal_type_id, vote_count, 
-            ROW_NUMBER() OVER (PARTITION BY meal_type_id ORDER BY vote_count DESC) AS rn 
-     FROM topvote
-   ) t 
-   WHERE t.rn = 1;`;
+export const INSERT_FINAL_MENU = 'INSERT INTO finalmenu (item_id) VALUES ?';
 
 export const GET_RECOMMENDATIONS = `
       SELECT 
@@ -192,5 +170,28 @@ export const UPDATE_EMPLOYEE_WITH_PREFERENCE = `UPDATE employee
   WHERE id = ?
 `;
 
-export const INSERT_USER_ACTIVITY = 
-`INSERT INTO useractivity (employee_id, activity) VALUES (?, ?)`;
+export const INSERT_USER_ACTIVITY = `INSERT INTO useractivity (employee_id, activity) VALUES (?, ?)`;
+
+export const GET_TODAY_RECOMMENDED_MENU_WITH_VOTES = `
+      SELECT 
+        rm.item_id AS item_id,
+        fi.item_name AS itemName,
+        mt.meal_type AS meal_type,
+        COALESCE(vote_counts.votes, 0) AS votes
+      FROM recommendedmenu rm
+      JOIN fooditem fi ON rm.item_id = fi.item_id
+      JOIN mealtype mt ON rm.meal_type_id = mt.meal_type_id
+      LEFT JOIN (
+        SELECT item_id, COUNT(*) AS votes
+        FROM vote
+        WHERE date = CURRENT_DATE
+        GROUP BY item_id
+      ) vote_counts ON rm.item_id = vote_counts.item_id
+      WHERE rm.date = CURRENT_DATE;
+    `;
+
+export const CHECK_IF_RECOMMENDED_MENU_EXISTS = 
+ `SELECT 1 FROM recommendedmenu WHERE date = CURRENT_DATE;`;
+
+ export const CHECK_IF_FINAL_MENU_EXISTS = `
+ SELECT 1 FROM finalmenu WHERE date = CURRENT_DATE;`;

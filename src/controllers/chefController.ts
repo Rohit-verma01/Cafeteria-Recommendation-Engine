@@ -1,6 +1,7 @@
 import { DiscardItemService } from "../services/discardItemService";
 import { MenuItemService } from "../services/menuItemService";
 import { NotificationService } from "../services/notificationService";
+import { RecommendedMenuService } from "../services/recommendedMenuService";
 import { UserService } from "../services/userService";
 import { UserActivity } from "../utils/constants";
 
@@ -9,12 +10,14 @@ export class ChefController {
   private discardItemService: DiscardItemService;
   private notificationService: NotificationService;
   private userService: UserService;
+  private recommendedMenuService: RecommendedMenuService;
 
   constructor() {
     this.menuItemService = new MenuItemService();
     this.discardItemService = new DiscardItemService();
     this.notificationService = new NotificationService();
     this.userService = new UserService();
+    this.recommendedMenuService = new RecommendedMenuService();
   }
 
   rollOutItems = async (payload: any, employeeId: number) => {
@@ -22,7 +25,7 @@ export class ChefController {
       employeeId,
       UserActivity.ROLL_OUT_ITEMS
     );
-    const data = await this.menuItemService.addItemInRecommendedMenu(payload);
+    const data = await this.recommendedMenuService.addItemInRecommendedMenu(payload);
     if (data.success) {
       await this.notificationService.sendRollOutNotification(payload, 3);
       return { data: data.message, type: "message" };

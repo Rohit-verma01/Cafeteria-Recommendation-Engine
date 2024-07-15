@@ -5,7 +5,7 @@ import {
   dietPreference,
   logObject,
   spiceLevel,
-} from "./category";
+} from "./constants";
 import {
   checkItemsBelongToDifferentMeal,
   validateOptionsForUpdateProfile,
