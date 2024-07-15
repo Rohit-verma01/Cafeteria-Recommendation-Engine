@@ -7,6 +7,7 @@ import {
   spiceLevel,
 } from "./category";
 import {
+  checkItemsBelongToDifferentMeal,
   validateOptionsForUpdateProfile,
   validateUniqueItems,
   validateVotedId,
@@ -253,17 +254,21 @@ export const promptForUpdateProfile = async () => {
 };
 
 export const promptSendFinal = async (list: any) => {
-  const validIds = list.map((item: any) => item.itemId);
+  const validIds = list.map((item: any) => item.item_id);
   while (true) {
     const items = await promptInput(
       "Enter comma sperated item id's from above only: "
     );
     const ids = items.split(",").map(id => id.trim()).map(Number);
-    console.log("valid ids = ",validIds,"ids = ",ids)
     const isValid = ids.every((id) => validIds.includes(id));
     if (isValid) {
-      return { proceed: true, message: ids };
-    } else {
+      const areDifferentMeals = checkItemsBelongToDifferentMeal(list, ids);
+      if (areDifferentMeals) {
+        return { proceed: true, message: ids };
+      }else{
+        console.log("Please enter item IDs belong to different meal type.")
+      }
+    }else {
       console.log("Please enter item IDs from the above list only.");
     }
   }

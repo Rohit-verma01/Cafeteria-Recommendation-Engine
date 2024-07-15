@@ -35,9 +35,9 @@ export class RecommendedMenuRepository {
     try {
       const query = `
       SELECT 
-        rm.item_id AS itemId,
+        rm.item_id AS item_id,
         fi.item_name AS itemName,
-        mt.meal_type AS mealType,
+        mt.meal_type AS meal_type,
         COALESCE(vote_counts.votes, 0) AS votes
       FROM recommendedmenu rm
       JOIN fooditem fi ON rm.item_id = fi.item_id
