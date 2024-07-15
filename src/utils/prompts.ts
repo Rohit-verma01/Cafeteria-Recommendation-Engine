@@ -162,7 +162,7 @@ export const promptForVote = async (menu: any) => {
     const itemWithMealType = menu.map((item: any) => {
       return {
         item_id: item.item_id,
-        meal_type_id: item.meal_type_id,
+        meal_type: item.meal_type,
       };
     });
     if (validateVotedId(itemWithMealType, votedFoodItemId))
@@ -249,5 +249,22 @@ export const promptForUpdateProfile = async () => {
     console.log("Invalid Selection\n");
   }
 
-  return {dietType, spicyLevel, prefer, likeSweet};
+  return { dietType, spicyLevel, prefer, likeSweet };
+};
+
+export const promptSendFinal = async (list: any) => {
+  const validIds = list.map((item: any) => item.itemId);
+  while (true) {
+    const items = await promptInput(
+      "Enter comma sperated item id's from above only: "
+    );
+    const ids = items.split(",").map(id => id.trim()).map(Number);
+    console.log("valid ids = ",validIds,"ids = ",ids)
+    const isValid = ids.every((id) => validIds.includes(id));
+    if (isValid) {
+      return { proceed: true, message: ids };
+    } else {
+      console.log("Please enter item IDs from the above list only.");
+    }
+  }
 };

@@ -8,6 +8,7 @@ import { EmployeeController } from "../controllers/employeeController";
 import { VoteRepository } from "../repositories/voteRepository";
 import { DiscardItemService } from "../services/discardItemService";
 import { MenuItemService } from "../services/menuItemService";
+import { RecommendedMenuRepository } from "../repositories/recommendedMenuRepository";
 
 class Server {
   private httpServer: HTTPServer;
@@ -31,6 +32,9 @@ class Server {
       socket.on("showRollOutMenu", this.sendRollOutMenu(socket));
       socket.on("isUserVoted", this.checkUserVoted(socket));
       socket.on("showDiscardMenu", this.sendDiscardMenu(socket));
+      socket.on("checkMenuFinalize", this.checkMenuFinalize(socket));
+      socket.on("checkRollOut", this.checkRollOut(socket));
+      socket.on("selectFromRollOut", this.selectFromRollOut(socket));
       socket.on("showQuestionForFeedback", this.sendFeedbackQuestion(socket));
     });
   }
@@ -78,6 +82,23 @@ class Server {
     socket.emit("sendMenu", result);
   };
 
+  private checkMenuFinalize = (socket:Socket) => async () => {
+    const menuItemService = new MenuItemService();
+    const result = await menuItemService.checkMenuFinalize()
+    socket.emit("checkMenuFinalize",result);
+  }
+
+  private checkRollOut = (socket:Socket) => async()=>{
+    const menuItemService = new MenuItemService();
+    const result = await menuItemService.checkRollOut()
+    socket.emit("checkRollOut",result)
+  }
+
+  private selectFromRollOut = (socket:Socket)=> async()=>{
+    const menuItemService = new MenuItemService();
+    const result = await menuItemService.selectFromRollOut()
+    socket.emit("selectFromRollOut",result)
+  }
   private sendFeedbackQuestion =
     (socket: Socket) => async (employeeId: number) => {
       const discardItemService = new DiscardItemService();

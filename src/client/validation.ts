@@ -50,15 +50,15 @@ export const checkItemsBelongToDifferentMeal = (
   itemWithMealType: any,
   votedFoodItemId: any
 ) => {
-  const mealTypeIds = new Set();
+  const mealType = new Set();
 
   for (const itemId of votedFoodItemId) {
     const item = itemWithMealType.find((item: any) => item.item_id === itemId);
-    const mealTypeId = item.meal_type_id;
-    if (mealTypeIds.has(mealTypeId)) {
+    const mealTypeId = item.meal_type;
+    if (mealType.has(mealTypeId)) {
       return false;
     }
-    mealTypeIds.add(mealTypeId);
+    mealType.add(mealTypeId);
   }
 
   return true;

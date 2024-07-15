@@ -54,12 +54,12 @@ export class ChefController {
     return { data, type: "notification" };
   };
 
-  sendFinalMenu = async (employeeId: number) => {
+  sendFinalMenu = async (employeeId: number,payload:any) => {
     await this.userService.addUserActivity(
       employeeId,
       UserActivity.SEND_FINAL_MENU
     );
-    const data = await this.menuItemService.addItemInFinalMenu();
+    const data = await this.menuItemService.addItemInFinalMenu(payload);
     return { data, type: "message" };
   };
 
@@ -88,7 +88,7 @@ export class ChefController {
       case 1:
         return this.rollOutItems(payload, user.employee_id);
       case 2:
-        return this.sendFinalMenu(user.employee_id);
+        return this.sendFinalMenu(user.employee_id,payload);
       case 3:
         return this.viewMenu(user.employee_id);
       case 4:

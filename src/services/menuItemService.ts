@@ -58,9 +58,9 @@ export class MenuItemService {
     }
   }
 
-
-
   async addItemInRecommendedMenu(item: any) {
+    if(item?.message!==undefined)
+      return {success:false,message:item.message} 
     try {
       return await this.recommendedItemRepository.addItem(item);
     } catch (error) {
@@ -72,9 +72,11 @@ export class MenuItemService {
     }
   }
 
-  async addItemInFinalMenu(){
+  async addItemInFinalMenu(payload:any){
+    if(!payload.proceed)
+      return payload.message;
     try {
-      return await this.menuItemRepository.finalizeTheMenu();
+      return await this.menuItemRepository.finalizeTheMenu(payload.message);
     } catch (error) {
       console.error("Error in service while finalizing the menu:", error);
       return `Failed to finalize the menu.`;
@@ -99,4 +101,28 @@ export class MenuItemService {
     }
   }
 
+  async checkMenuFinalize(){
+    try {
+      return await this.menuItemRepository.checkFinalMenu();
+    } catch (error) {
+      return "Error while checking the final menu"
+    }
+  }
+
+  async checkRollOut(){
+    try {
+      return await this.recommendedItemRepository.checkRollOut()
+    } catch (error) {
+      return "Error while checking the rolled out menu";
+    }
+  }
+
+  async selectFromRollOut(){
+    try{
+      return await this.recommendedItemRepository.selectFromRollOut();
+    } catch(error){
+      return "Error while showing rolled out menu";
+    }
+
+  }
 }

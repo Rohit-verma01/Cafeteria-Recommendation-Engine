@@ -108,13 +108,11 @@ export class MenuItemRepository {
     }
   }
 
-  async finalizeTheMenu() {
+  async finalizeTheMenu(items:any) {
     try {
-      await pool.query(VOTE_COUNT);
-      await pool.query(TOP_VOTE);
-      await pool.query(INSERT_FINAL_MENU);
-      await pool.query(DROP_VOTE_COUNT);
-      await pool.query(DROP_TOP_VOTE);
+      const values = items.map((item:any) => [item]);
+      const INSERT_FINAL_MENU = 'INSERT INTO finalmenu (item_id) VALUES ?';
+      await pool.query(INSERT_FINAL_MENU, [values]);
       return "Menu finalized successfully\n";
     } catch (error) {
       console.error("Error finalizing the menu:", error);
@@ -142,4 +140,19 @@ export class MenuItemRepository {
       return "Failed to view the recommendation.\n";
     }
   }
+
+    async checkFinalMenu(){
+      try {
+        const query = `
+        SELECT 1 
+        FROM finalmenu 
+        WHERE date = CURRENT_DATE;
+      `;
+        const [rows] = await pool.query<RowDataPacket[]>(query);
+        return rows.length>0;
+      } catch (error) {
+        console.error("Error while checking final menu:", error);
+        throw error;
+      }
+    }
 }
