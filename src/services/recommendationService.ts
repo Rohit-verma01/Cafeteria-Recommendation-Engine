@@ -3,15 +3,18 @@ import { getTopWords } from "../server/serverUtils";
 import { FeedbackService } from "./feedbackService";
 
 export class RecommendationService {
-  private feedbackService: FeedbackService;
+  private feedbackService: FeedbackService | null = null;
 
-  constructor() {
-    this.feedbackService = new FeedbackService();
+  private getFeedbackService(): FeedbackService {
+    if (!this.feedbackService) {
+      this.feedbackService = new FeedbackService();
+    }
+    return this.feedbackService;
   }
 
   async sentimentAnalysis(foodItem: any) {
     try {
-      const data: any = await this.feedbackService.getFeedbackByItemId(
+      const data: any = await this.getFeedbackService().getFeedbackByItemId(
         foodItem.itemId
       );
       const comments = data.map((item: { comment: string }) => item.comment);

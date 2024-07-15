@@ -3,6 +3,7 @@ import { Socket } from "socket.io-client";
 export const handleChefInput = async (
     selectedIndex: number,
     socket: Socket,
+    employeeId:number
   ) => {
     switch (selectedIndex) {
       case 1:
@@ -14,7 +15,7 @@ export const handleChefInput = async (
       case 4:
         return "";
       case 5:
-      return await discardMenu(socket);
+      return await discardMenu(socket,employeeId);
       case 6:
         return "";
     }
@@ -43,10 +44,10 @@ export const handleChefInput = async (
     return await promptForRollOut();
   };
 
-  export const discardMenu = async (socket: Socket) => {
+  export const discardMenu = async (socket: Socket,employeeId:number) => {
     let list:any=[];
     await new Promise<void>(async(resolve) => {
-      socket.emit("showDiscardMenu");
+      socket.emit("showDiscardMenu",employeeId);
       socket.on("sendDiscardMenu", async (response) => {
         console.table(response.data, ["itemId", "item", "price"]);
         list=response.data;

@@ -50,7 +50,7 @@ export class ChefController {
 
   viewNotification = async (user: any) => {
     await this.userService.addUserActivity(
-      user.employeeId,
+      user.employee_id,
       UserActivity.VIEW_NOTIFICATION
     );
     const data = await this.notificationService.viewNotification(user);
