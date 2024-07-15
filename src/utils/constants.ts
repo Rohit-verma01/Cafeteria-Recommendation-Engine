@@ -28,6 +28,7 @@ export const categories = {
   7:"Sandwich",
   8:"Pulses",
   9:"Vegetables",
+  10:"Sweets"
 }
 
 export const dietPreference = {

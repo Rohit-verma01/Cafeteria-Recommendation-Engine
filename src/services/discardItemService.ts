@@ -1,14 +1,14 @@
-import { DiscardMenuRepsitory } from "../repositories/discardMenuRepository";
+import { DiscardMenuRepository } from "../repositories/discardMenuRepository";
 import { MenuItemService } from "./menuItemService";
 import { NotificationService } from "./notificationService";
 
 export class DiscardItemService {
-  private discardMenuRepository: DiscardMenuRepsitory;
+  private discardMenuRepository: DiscardMenuRepository;
   private menuItemService: MenuItemService;
   private notificationService: NotificationService;
 
   constructor() {
-    this.discardMenuRepository = new DiscardMenuRepsitory();
+    this.discardMenuRepository = new DiscardMenuRepository();
     this.menuItemService = new MenuItemService();
     this.notificationService = new NotificationService();
   }

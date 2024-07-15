@@ -14,7 +14,7 @@ import {
   UPDATE_LAST_USED_FOR_ACTION_TYPE,
 } from "../queries/queries";
 
-export class DiscardMenuRepsitory {
+export class DiscardMenuRepository {
   async getDetailedFeedbackItem() {
     try {
       const [rows] = await pool.query<RowDataPacket[]>(

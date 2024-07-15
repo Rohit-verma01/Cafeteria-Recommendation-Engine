@@ -80,7 +80,7 @@ export const promptForFoodItemDetails = async () => {
   const foodName = await promptInput("Enter food item name: ");
   const price = await promptInput("Enter food item price: ");
   console.log("Below are the categories :");
-  logObject(categories);
+  console.log(logObject(categories));
   const categoryId = await promptInput("Select Category: ");
   const foodItemDetails = {
     foodName,

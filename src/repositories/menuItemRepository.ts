@@ -1,5 +1,5 @@
 import { pool } from "../config/db_connection";
-import { RowDataPacket } from "mysql2";
+import { ResultSetHeader, RowDataPacket } from "mysql2";
 import {
   CHECK_IF_FINAL_MENU_EXISTS,
   DELETE_FOOD_ITEM_BY_NAME,
@@ -44,8 +44,13 @@ export class MenuItemRepository {
 
   async deleteMenuItem(name: string) {
     try {
-      await pool.query(DELETE_FOOD_ITEM_BY_NAME, [name]);
-      return { success: true, message: `${name} item deleted` };
+      const [rows] = await pool.query<ResultSetHeader>(
+        DELETE_FOOD_ITEM_BY_NAME,
+        [name]
+      );
+      if (rows.affectedRows)
+        return { success: true, message: `${name} item deleted` };
+      else return { success: false, message: `${name} item not found` };
     } catch (error) {
       console.error(`Error deleting menu item "${name}":`, error);
       throw error;
@@ -54,7 +59,9 @@ export class MenuItemRepository {
 
   async getItemName(itemId: number) {
     try {
-      const [rows] = await pool.query<RowDataPacket[any]>(GET_ITEM_BY_ID, [itemId]);
+      const [rows] = await pool.query<RowDataPacket[any]>(GET_ITEM_BY_ID, [
+        itemId,
+      ]);
       return rows[0].item_name;
     } catch (error) {
       console.error(`Error getting menu item name:`, error);
@@ -66,27 +73,44 @@ export class MenuItemRepository {
     const { foodName, foodPrice, availabilityStatus } = item;
     try {
       if (foodPrice && availabilityStatus) {
-        await pool.execute(UPDATE_PRICE_AND_AVAILABILITY, [
-          foodPrice,
-          availabilityStatus === "true",
-          foodName,
-        ]);
-        return {
-          success: true,
-          message: "Item price and availability updated successfully\n",
-        };
+        const [rows] = await pool.query<ResultSetHeader>(
+          UPDATE_PRICE_AND_AVAILABILITY,
+          [foodPrice, availabilityStatus === "true", foodName]
+        );
+        if (rows.affectedRows)
+          return {
+            success: true,
+            message: "Item price and availability updated successfully\n",
+          };
+        else
+          return {
+            success: false,
+            message: "Enter correct item name\n",
+          };
       } else if (foodPrice) {
-        await pool.query(UPDATE_PRICE, [foodPrice, foodName]);
-        return { success: true, message: "Item price updated successfully\n" };
+        const [rows] = await pool.query<ResultSetHeader>(UPDATE_PRICE, [
+          foodPrice,
+          foodName,
+        ]);
+        if (rows.affectedRows)
+          return {
+            success: true,
+            message: "Item price updated successfully\n",
+          };
+        else return { success: false, message: "Enter correct item name\n" };
       } else if (availabilityStatus) {
-        await pool.query(UPDATE_AVAILABILITY, [
+        const [rows] = await pool.query<ResultSetHeader>(UPDATE_AVAILABILITY, [
           availabilityStatus === "true",
           foodName,
         ]);
-        return {
-          success: true,
-          message: "Item availability updated successfully\n",
-        };
+        if (rows.affectedRows)
+          return {
+            success: true,
+            message: "Item availability updated successfully\n",
+          };
+        else {
+          return { success: false, message: "Enter correct item name\n" };
+        }
       } else {
         return {
           success: false,
@@ -95,13 +119,13 @@ export class MenuItemRepository {
       }
     } catch (error) {
       console.error(`Error updating menu item "${foodName}":`, error);
-     throw error;
+      throw error;
     }
   }
 
-  async finalizeTheMenu(items:any) {
+  async finalizeTheMenu(items: any) {
     try {
-      const values = items.map((item:any) => [item]);
+      const values = items.map((item: any) => [item]);
       await pool.query(INSERT_FINAL_MENU, [values]);
       return "Menu finalized successfully\n";
     } catch (error) {
@@ -131,13 +155,15 @@ export class MenuItemRepository {
     }
   }
 
-    async checkFinalMenu(){
-      try {
-        const [rows] = await pool.query<RowDataPacket[]>(CHECK_IF_FINAL_MENU_EXISTS);
-        return rows.length>0;
-      } catch (error) {
-        console.error("Error while checking final menu:", error);
-        throw error;
-      }
+  async checkFinalMenu() {
+    try {
+      const [rows] = await pool.query<RowDataPacket[]>(
+        CHECK_IF_FINAL_MENU_EXISTS
+      );
+      return rows.length > 0;
+    } catch (error) {
+      console.error("Error while checking final menu:", error);
+      throw error;
     }
+  }
 }
