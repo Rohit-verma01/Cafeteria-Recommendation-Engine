@@ -1,4 +1,3 @@
-import { RecommendedMenuRepository } from "../repositories/recommendedMenuRepository";
 import { DiscardItemService } from "../services/discardItemService";
 import { FeedbackService } from "../services/feedbackService";
 import { MenuItemService } from "../services/menuItemService";
@@ -41,16 +40,12 @@ export class EmployeeController {
   };
 
   giveFeedback = async (payload: any, user: any) => {
-    try {
-      const data = await this.feedbackService.sendFeedback(payload, user);
-      await this.userService.addUserActivity(
-        user.employee_id,
-        UserActivity.GIVE_FEEDBACK
-      );
-      return { data, type: "message" };
-    } catch (error: any) {
-      return { data: error.message, type: "error" };
-    }
+    const data = await this.feedbackService.sendFeedback(payload, user);
+    await this.userService.addUserActivity(
+      user.employee_id,
+      UserActivity.GIVE_FEEDBACK
+    );
+    return { data, type: "message" };
   };
 
   sendVotes = async (payload: any, user: any) => {
@@ -110,7 +105,10 @@ export class EmployeeController {
       case 6:
         return this.sendUpdatedProfileInfo(payload, user.employee_id);
       case 7:
-        await this.userService.addUserActivity(user.employee_id,UserActivity.LOGOUT);
+        await this.userService.addUserActivity(
+          user.employee_id,
+          UserActivity.LOGOUT
+        );
         return "logout";
       case 8:
         return this.viewRollOutMenu(user);

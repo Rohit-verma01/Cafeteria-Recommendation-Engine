@@ -26,7 +26,7 @@ export class DiscardMenuRepsitory {
         "Error while getting the item for detailed feedback: ",
         error
       );
-      return "Error in getting the item for detailed feedbac";
+      throw error;
     }
   }
 
@@ -36,7 +36,7 @@ export class DiscardMenuRepsitory {
       return rows;
     } catch (error) {
       console.log("Error while viewing the discard menu item :", error);
-      return "Error in viewing the discard menu items";
+      throw error;
     }
   }
 
@@ -117,7 +117,6 @@ export class DiscardMenuRepsitory {
         if (updateResult.affectedRows === 0) {
           await pool.query(INSERT_NEW_ACTION, [employeeID, 2]);
         }
-
         return true;
       }
     } catch (error) {

@@ -20,10 +20,7 @@ export class FeedbackRepository {
           message: `Already given feedback for item ${feedback.itemId} today.\n`,
         };
       } else {
-        return {
-          success: false,
-          message: "An error occurred while submitting feedback.",
-        };
+        throw error;
       }
     }
   }
@@ -32,8 +29,9 @@ export class FeedbackRepository {
     try {
       const [comments] = await pool.query(GET_FEEDBACK_BY_FOOD_ID, [itemId]);
       return comments;
-    } catch (error: any) {
-      return { success: false, message: "Unable to get feedbacks" };
+    } catch (error) {
+      console.log("Error while getting the feedback: ",error)
+      throw error;
     }
   }
 }

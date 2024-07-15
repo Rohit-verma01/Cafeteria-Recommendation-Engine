@@ -1,6 +1,5 @@
 import { RowDataPacket } from "mysql2";
 import { pool } from "../config/db_connection";
-import { FeedbackRepository } from "../repositories/feedbackRepository";
 import { NotificationRepository } from "../repositories/notificationRepository";
 import { MenuItemService } from "./menuItemService";
 

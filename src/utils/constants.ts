@@ -48,6 +48,18 @@ export const cuisinePreference = {
   3:"Other"
 }
 
+export const employeeOptionMapping=[
+  'View Menu', 'View Notification', 'Give Feedback','Vote for Recommended Menu','Give Detailed Feedback for Discard Item','Update profile','Logout',
+]
+
+export const chefOptionMapping=[
+  'Roll Out Items', 'Send Final Menu','View Menu','View Notifcation','View Discard Menu','Logout',
+]
+
+export const adminOptionMapping=[
+  'Add Item','Update Item','Delete Item','View Menu','Logout'
+]
+
 type NumberKeyedStringObject = {
   [key: number]: string;
 };

@@ -1,14 +1,4 @@
-const employeeOptionMapping=[
-  'View Menu', 'View Notification', 'Give Feedback','Vote for Recommended Menu','Give Detailed Feedback for Discard Item','Update profile','Logout',
-]
-
-const chefOptionMapping=[
-  'Roll Out Items', 'Send Final Menu','View Menu','View Notifcation','View Discard Menu','Logout',
-]
-
-const adminOptionMapping=[
-  'Add Item','Update Item','Delete Item','View Menu','Logout'
-]
+import { adminOptionMapping, chefOptionMapping, employeeOptionMapping } from "../utils/constants";
 
 export const getFunctionsByRole = (roleName: string) => {
   switch (roleName) {

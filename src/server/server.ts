@@ -36,6 +36,7 @@ class Server {
       socket.on("checkRollOut", this.checkRollOut(socket));
       socket.on("selectFromRollOut", this.selectFromRollOut(socket));
       socket.on("showQuestionForFeedback", this.sendFeedbackQuestion(socket));
+      socket.on("showActualMenu", this.showMenu(socket));
     });
   }
 
@@ -80,6 +81,12 @@ class Server {
     const menuItemService = new MenuItemService();
     const result = await menuItemService.viewRecommendationMenu();
     socket.emit("sendMenu", result);
+  };
+
+  private showMenu = (socket: Socket) => async () => {
+    const menuItemService = new MenuItemService();
+    const result = await menuItemService.viewMenu();
+    socket.emit("showActualMenu", result);
   };
 
   private checkMenuFinalize = (socket:Socket) => async () => {

@@ -1,17 +1,17 @@
-import { FeedbackRepository } from "../repositories/feedbackRepository";
 import { negativeWords, positiveWords } from "../utils/sentimentWords";
 import { getTopWords } from "../server/serverUtils";
+import { FeedbackService } from "./feedbackService";
 
 export class RecommendationService {
-  private feedbackRepository: FeedbackRepository;
+  private feedbackService: FeedbackService;
 
   constructor() {
-    this.feedbackRepository = new FeedbackRepository();
+    this.feedbackService = new FeedbackService();
   }
 
   async sentimentAnalysis(foodItem: any) {
     try {
-      const data: any = await this.feedbackRepository.getFeedbackByItemId(
+      const data: any = await this.feedbackService.getFeedbackByItemId(
         foodItem.itemId
       );
       const comments = data.map((item: { comment: string }) => item.comment);
@@ -24,7 +24,7 @@ export class RecommendationService {
       };
     } catch (error) {
       console.error(
-        "Unknown error in Recommendation Service while analyzing  sentiment:",
+        "Unknown error in Recommendation Service while analyzing sentiment:",
         error
       );
       return { success: false, score: 0 };

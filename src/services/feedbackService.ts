@@ -33,4 +33,12 @@ export class FeedbackService {
       return { success: false, message: "Failed to send feedback." };
     }
   }
+  
+  async getFeedbackByItemId(itemId: number){
+    try {
+      return await this.feedbackRepository.getFeedbackByItemId(itemId);
+    } catch (error) {
+      return { success: false, message: "Unable to get feedbacks" };
+    }
+  }
 }

@@ -30,9 +30,9 @@ export const handleEmployeeInput = async (
 
 export const giveFeedback = async (socket: Socket) => {
   await new Promise<void>((resolve) => {
-    socket.emit("showMenu");
-    socket.on("sendMenu", async (response) => {
-      console.table(response.data, ["itemId", "item", "price", "category"]);
+    socket.emit("showActualMenu");
+    socket.on("showActualMenu", async (response) => {
+      console.table(response, ["itemId", "item", "price", "category"]);
       resolve();
     });
   });
