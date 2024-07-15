@@ -19,16 +19,12 @@ export class VoteRepository {
     }
   }
 
-  async addVotes(voteList: any, user: any) {
-    const values = voteList.map((item_id: number) => [
-      item_id,
-      user.employee_id,
-    ]);
+  async addVotes(voteList: any) {
     try {
-      await pool.query(INSERT_VOTES, [values]);
+      await pool.query(INSERT_VOTES, [voteList]);
       return "Votes added successfully\n";
     } catch (error: any) {
-      return "Failed to add votes.\n";
+      throw(error)
     }
   }
 }

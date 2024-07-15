@@ -8,7 +8,7 @@ import { EmployeeController } from "../controllers/employeeController";
 import { VoteRepository } from "../repositories/voteRepository";
 import { DiscardItemService } from "../services/discardItemService";
 import { MenuItemService } from "../services/menuItemService";
-import { RecommendedMenuRepository } from "../repositories/recommendedMenuRepository";
+import { VoteService } from "../services/voteService";
 
 class Server {
   private httpServer: HTTPServer;
@@ -115,8 +115,8 @@ class Server {
   };
 
   private checkUserVoted = (socket: Socket) => async (employeeId: number) => {
-    const voteRepository = new VoteRepository();
-    const result = await voteRepository.countUserVote(employeeId);
+    const voteService = new VoteService();
+    const result = await voteService.countUserVote(employeeId);
     socket.emit("checkUserVoted", result);
   };
 

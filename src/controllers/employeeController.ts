@@ -1,4 +1,3 @@
-import { User } from "../models/user";
 import { RecommendedMenuRepository } from "../repositories/recommendedMenuRepository";
 import { VoteRepository } from "../repositories/voteRepository";
 import { DiscardItemService } from "../services/discardItemService";
@@ -7,6 +6,7 @@ import { MenuItemService } from "../services/menuItemService";
 import { NotificationService } from "../services/notificationService";
 import { UserService } from "../services/userService";
 import { UserActivity } from "../utils/constants";
+import { VoteService } from "../services/voteService";
 
 export class EmployeeController {
   private menuItemService: MenuItemService;
@@ -16,6 +16,7 @@ export class EmployeeController {
   private notificationService: NotificationService;
   private discardItemService: DiscardItemService;
   private userService: UserService;
+  private voteService: VoteService;
 
   constructor() {
     this.menuItemService = new MenuItemService();
@@ -25,6 +26,7 @@ export class EmployeeController {
     this.notificationService = new NotificationService();
     this.discardItemService = new DiscardItemService();
     this.userService = new UserService();
+    this.voteService = new VoteService();
   }
 
   viewRollOutMenu = async (employeeId: number) => {
@@ -55,7 +57,7 @@ export class EmployeeController {
 
   sendVotes = async (payload: any, user: any) => {
     if (payload) {
-      const data = await this.voteRepository.addVotes(payload, user);
+      const data = await this.voteService.addVotes(payload, user);
       await this.userService.addUserActivity(
         user.employee_id,
         UserActivity.VOTE_FOR_RECOMMENDED_MENU

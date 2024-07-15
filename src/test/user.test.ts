@@ -11,7 +11,6 @@ describe('UserService', () => {
   let userService: UserService;
 
   beforeEach(() => {
-    // Clear mock calls and instances before each test
     jest.clearAllMocks();
     userService = new UserService();
   });

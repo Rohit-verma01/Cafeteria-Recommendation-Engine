@@ -27,17 +27,15 @@ export class UserRepository {
       }
     } catch (error) {
       console.error("Error querying the database:", error);
-      return "Enbale to fetch user"
+      throw error;
     }
   }
 
   async getRoleById(roleId: number) {
     try {
-      const connection = await pool.getConnection();
-      const [rows] = await connection.query<RowDataPacket[]>(GET_ROLE_BY_ID, [
+      const [rows] = await pool.query<RowDataPacket[]>(GET_ROLE_BY_ID, [
         roleId,
       ]);
-      connection.release();
 
       if (rows.length > 0) {
         const role: IRole = {
@@ -50,7 +48,7 @@ export class UserRepository {
       }
     } catch (error) {
       console.error("Error querying the database:", error);
-      return "Failed to fetch role details\n";
+      throw error;
     }
   }
 
@@ -83,15 +81,16 @@ export class UserRepository {
       return "Employee profile updated successfully.\n";
     } catch (error) {
       console.error("Error while updating the employee profile:", error);
-      return "Failed to update employee profile.\n";
+      throw error;
     }
   }
 
-  async addActivity(employeeId:number,activity:string){
-  try {
-    await pool.execute(INSERT_USER_ACTIVITY, [employeeId, activity]);
-  } catch (error) {
-    console.error("Error adding activity:", error);
-  }
+  async addActivity(employeeId: number, activity: string) {
+    try {
+      await pool.execute(INSERT_USER_ACTIVITY, [employeeId, activity]);
+    } catch (error) {
+      console.error("Error adding activity:", error);
+      throw error;
+    }
   }
 }
